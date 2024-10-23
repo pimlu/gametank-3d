@@ -1,16 +1,21 @@
 #include "scr.h"
 
 
-Scr *scr = (Scr*) 0x2000;
+__attribute__((section(".bss")))
+Scr scr;
 
 void Scr::setColorfillMode(bool enabled) {
-    videoCfg = updateBit(videoCfg, 3, enabled);
+    videoCfg.setBit(3, enabled);
 }
 void Scr::flipFramebuffer() {
-    videoCfg = toggleBit(videoCfg, 1);
-    // @stu what is this?
-    bankingReg = toggleBit(bankingReg, 3);
+    // DMA_PAGE_OUT - Select framebuffer page sent to TV
+    videoCfg.toggleBit(1);
+    // "Select which framebuffer to read/write/blit"
+    bankingReg.toggleBit(3);
+}
+void Scr::setDefaultVideoFlags() {
+    videoCfg.write(0b01101101);
 }
 void Scr::setEnableVblankNmi(bool enabled) {
-    videoCfg = updateBit(videoCfg, 2, enabled);
+    videoCfg.setBit(2, enabled);
 }

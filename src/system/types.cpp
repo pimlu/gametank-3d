@@ -1,15 +1,41 @@
 #include "types.h"
 
-uint8_t updateBit(uint8_t reg, uint8_t bit, bool val) {
+#include "interrupts.h"
+
+__attribute__((section(".rodata.fixed")))
+uint8_t lut[8] = {
+    0b1,
+    0b10,
+    0b100,
+    0b1000,
+    0b10000,
+    0b100000,
+    0b1000000,
+    0b10000000
+};
+// llvm-mos generates attrocious code for 1 << bit so fix that
+__attribute__((section(".text.fixed")))
+uint8_t bits::oneShiftN(uint8_t n) {
+    if (n >= 8) {
+        panicPls();
+    }
+    return lut[n];
+}
+
+bool debugIt = false;
+__attribute__((section(".text.fixed")))
+uint8_t bits::updateBit(uint8_t reg, uint8_t bit, bool val) {
     if (val) {
-        return reg | (1 << bit);
+        return reg | oneShiftN(bit);
     } else {
-        return reg & ~(1 << bit);
+        return reg & ~oneShiftN(bit);
     }
 }
-uint8_t toggleBit(uint8_t reg, uint8_t bit) {
-    return reg ^ (1 << bit);
+__attribute__((section(".text.fixed")))
+uint8_t bits::toggleBit(uint8_t reg, uint8_t bit) {
+    return reg ^ oneShiftN(bit);
 }
-bool getBit(uint8_t reg, uint8_t bit) {
-    return reg & (1 << bit);
+__attribute__((section(".text.fixed")))
+bool bits::getBit(uint8_t reg, uint8_t bit) {
+    return reg & oneShiftN(bit);
 }

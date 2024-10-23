@@ -14,12 +14,16 @@ MEMORY
 SECTIONS
 {
     .vector_table : {
-        KEEP(*(.vector_table));
+        KEEP(*(.vector_table))
     } > VECTOR_TABLE
 
     .rodata : {
-        *(.rodata*);
+        *(.rodata*)
     } > BANKED_FLASH
+
+    .rodata_fixed : {
+        *(.rodata.fixed*)
+    } > FIXED_FLASH
 
 	.text_fixed : {
 		*(.text.fixed*)
@@ -36,11 +40,11 @@ SECTIONS
 
     .data : {
         *(.data*)
-    } > FIXED_FLASH
+    } > RAM
 
     .bss : {
         *(.bss*)
-    } > FIXED_FLASH
+    } > RAM
 
 
     .noinit (NOLOAD) : {

@@ -2,19 +2,20 @@
 
 #include "scr.h"
 
-Bcr *bcr = (Bcr*) 0x4000;
+__attribute__((section(".bss")))
+Bcr bcr;
 
 void Bcr::drawBox(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t c) {
-    scr->setColorfillMode(true);
+    scr.setColorfillMode(true);
 
-    vx = x;
-    vy = y;
-    width = w;
-    height = h;
-    color = c;
+    vx.write(x);
+    vy.write(y);
+    width.write(w);
+    height.write(h);
+    color.write(c);
     
-    start = 1;
+    start.write(1);
 }
 void Bcr::resetIrq() {
-    start = 0;
+    start.write(0);
 }
