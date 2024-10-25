@@ -4,16 +4,13 @@
 #include <algorithm>
 
 
-#include <iostream>
+// #include <iostream>
 
 struct ScreenPos {
     int8_t x, y;
     inline ScreenPos transpose() {
         return {y, x};
     }
-    // 1,3
-    // -1,3
-    // -3,1
     
     inline ScreenPos flip() {
         return {(int8_t)-y, x};
@@ -119,6 +116,7 @@ inline uint8_t absDiffi8(int8_t a, int8_t b) {
 
 class Bresenham {
     bool isSwapped;
+    bool swappedIsPos;
     BresenhamCore core;
     int8_t fakeY;
     int8_t prevFakeX;
@@ -127,6 +125,7 @@ class Bresenham {
         uint8_t dx = absDiffi8(a.x, b.x), dy = absDiffi8(a.y, b.y);
         return dx > dy;
     }
+    
 
 
     public:
@@ -144,9 +143,10 @@ class Bresenham {
                     std::swap(aT, bT);
                 }
                 prevFakeX = aT.x;
-                std::cout << "prevFakeX=" << (int) prevFakeX << std::endl;
-                fakeY = aT.y - 1;
-                std::cout << "fakeY=" << (int) fakeY << std::endl;
+                // std::cout << "prevFakeX=" << (int) prevFakeX << std::endl;
+                swappedIsPos = aT.x >= bT.x;
+                fakeY = (swappedIsPos ? aT.y - 1 : bT.y + 1);
+                // std::cout << "fakeY=" << (int) fakeY << std::endl;
                 core = BresenhamCore(aT, bT);
             } else {
                 core = BresenhamCore(a, b);
@@ -155,24 +155,16 @@ class Bresenham {
 
     int8_t bresenhamIter() {
         if (isSwapped) {
-            // // it's transposed, so instead we need to "count the runs of the fake-X output"
-            // do {
-            //     // bresenhamIter is returning "x" but it's actually y
-            //     y = core.bresenhamIter();
-            //     // std::cout << "x=" << (int) x << ", prevX=" << (int) prevX << std::endl;
-            //     x++;
-            // } while(y == prevY);
-            // prevY = y;
-            // return x;
 
             int8_t fakeX;
             do {
                 fakeX = core.bresenhamIter();
                 // std::cout << (int) fakeX << " " << (int) fakeY << std::endl;
-                fakeY++;
+                if (swappedIsPos) fakeY++;
+                else fakeY--;
 
-                std::cout << "at fX=" << (int) fakeX <<  ", fY=" << (int) fakeY << std::endl;
-                std::cout << (fakeX == prevFakeX ? "continuing." : "breaking.") << std::endl;
+                // std::cout << "at fX=" << (int) fakeX <<  ", fY=" << (int) fakeY << std::endl;
+                // std::cout << (fakeX == prevFakeX ? "continuing." : "breaking.") << std::endl;
             } while(fakeX == prevFakeX);
             prevFakeX = fakeX;
 
