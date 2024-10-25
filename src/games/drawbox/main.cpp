@@ -4,8 +4,13 @@
 #include "system/scr.h"
 #include "system/interrupts.h"
 
-int main() {
+uint16_t doAddSub(uint8_t a, uint8_t b, uint8_t c) {
+    uint8_t sum;
+    bool carry = __builtin_add_overflow(a, b, &sum);
+    return a + b;
+}
 
+int main() {
     bcr.resetIrq();
 
     scr.setDefaultVideoFlags();

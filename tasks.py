@@ -87,6 +87,11 @@ def build(c):
         gt_run(c, f'llvm-objcopy -O binary build/drawbox build/drawbox.gtr')
     
 
+@task
+def build_test(c):
+    with c.cd(root_dir):
+        c.run("mkdir -p build/tests")
+        c.run("clang++ --std=c++17 -lstdc++ -fsanitize=undefined -Isrc src/graphics/bresenham.cpp src/tests/bresenham_test.cpp -o build/tests/bresenham_test")
 
 
 @task
