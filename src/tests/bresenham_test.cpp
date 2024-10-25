@@ -308,44 +308,44 @@ int main(int argc, char** argv) {
         }
     }
 
-    validateTranspose<BresenhamReference>({-1,0},{-3,3});
-    std::cout << "------------" << std::endl;
-    validateTranspose<BresenhamReference>({0,-1},{3,-3});
+    validateTranspose<BresenhamReference>({2,3},{4,5});
+    // std::cout << "------------" << std::endl;
+    // validateTranspose<BresenhamReference>({0,-1},{3,-3});
     std::cout << "##############" << std::endl;
-    if (!testSameAlgo<BresenhamReference, Bresenham>({0,1},{3,3})) {
-        return 1;
-    }
+    // if (!testSameAlgo<BresenhamReference, Bresenham>({2,3},{4,5})) {
+    //     return 1;
+    // }
 
     std::random_device rd;
     std::default_random_engine e1(rd());
-    std::uniform_int_distribution<int8_t> uniform_dist(0, 3);
+    std::uniform_int_distribution<int8_t> uniform_dist(0, 50);
     auto randPos = [&]() { return ScreenPos { uniform_dist(e1), uniform_dist(e1)};};
 
 
     std::cout << "fuzzing against reference... (" << ITERS << " iters)" << std::endl;
 
 
-    // std::cout << "CorePos" << std::endl;
-    // for (size_t i = 0; i < ITERS; i++) {
-    //     ScreenPos a = randPos(), b = randPos();
-    //     // make dy bigger
-    //     int8_t x = a.x + std::min(b.x, b.y);
-    //     int8_t y = a.y + std::max(b.x, b.y);
-    //     if (!testSameAlgo<BresenhamReference, BresenhamCore>(a, {x, y})) {
-    //         return 1;
-    //     }
-    // }
+    std::cout << "CorePos" << std::endl;
+    for (size_t i = 0; i < ITERS; i++) {
+        ScreenPos a = randPos(), b = randPos();
+        // make dy bigger
+        int8_t x = a.x + std::min(b.x, b.y);
+        int8_t y = a.y + std::max(b.x, b.y);
+        if (!testSameAlgo<BresenhamReference, BresenhamCore>(a, {x, y})) {
+            return 1;
+        }
+    }
 
-    // std::cout << "CoreNeg" << std::endl;
-    // for (size_t i = 0; i < ITERS; i++) {
-    //     ScreenPos a = randPos(), b = randPos();
-    //     // make dy bigger
-    //     int8_t x = a.x - std::min(b.x, b.y);
-    //     int8_t y = a.y + std::max(b.x, b.y);
-    //     if (!testSameAlgo<BresenhamReference, BresenhamCore>(a, {x, y})) {
-    //         return 1;
-    //     }
-    // }
+    std::cout << "CoreNeg" << std::endl;
+    for (size_t i = 0; i < ITERS; i++) {
+        ScreenPos a = randPos(), b = randPos();
+        // make dy bigger
+        int8_t x = a.x - std::min(b.x, b.y);
+        int8_t y = a.y + std::max(b.x, b.y);
+        if (!testSameAlgo<BresenhamReference, BresenhamCore>(a, {x, y})) {
+            return 1;
+        }
+    }
 
     
     std::cout << "CorePosT" << std::endl;
@@ -359,7 +359,6 @@ int main(int argc, char** argv) {
         }
     }
 
-
     
     // std::cout << "CoreNegT" << std::endl;
     // for (size_t i = 0; i < ITERS; i++) {
@@ -367,7 +366,7 @@ int main(int argc, char** argv) {
     //     // make dx bigger
     //     int8_t x = a.x - std::max(b.x, b.y);
     //     int8_t y = a.y + std::min(b.x, b.y);
-    //     if (!testSameAlgo<BresenhamReference, BresenhamCore>(a, {x, y})) {
+    //     if (!testSameAlgo<BresenhamReference, Bresenham>(a, {x, y})) {
     //         return 1;
     //     }
     // }

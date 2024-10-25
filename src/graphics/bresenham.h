@@ -11,6 +11,16 @@ struct ScreenPos {
     inline ScreenPos transpose() {
         return {y, x};
     }
+    // 1,3
+    // -1,3
+    // -3,1
+    
+    inline ScreenPos flip() {
+        return {(int8_t)-y, x};
+    }
+    inline ScreenPos unflip() {
+        return {y, (int8_t)-x};
+    }
 };
 
 void output(ScreenPos p);
@@ -23,63 +33,56 @@ class BresenhamCore{
 
     uint8_t E;
     bool isPos;
+    bool isExcl;
 
-    int8_t bresenhamIterPos() {
-        // in the real algorithm, the lowest E can get to is -dx.
-        // we've established since E is unsigned that the algorithm doesn't trigger
-        // the while loop in the first pass. so we can safely "rotate" the phase of the algorithm
-        // the point of rotating it is to keep it positive (add before subtracting)
-        int8_t ret = xL;
-        // if subtracting 2*dx would underflow...
-        if (E < 2*dx) {
-            xL++;
-            E += 2 * dy - 2 * dx;
-        } else {
-            E -= 2*dx;
-        }
-        return ret;
+    void inc() {
+        if (isPos) xL++;
+        else xL--;
     }
-    int8_t bresenhamIterNeg() {
-        // same approach as bresenhamIterPos, but E is negated
-        int8_t ret = xL;
 
-        // if subtracting 2*dx would underflow...
-        if (E <= 2*dx) {
-            xL--;
-            E += 2 * dy - 2 * dx;
-        } else {
-            E -= 2 * dx;
-        }
-        return ret;
-    }
 public:
 
     // needed for annoying copy reasons
-    BresenhamCore() : xL(0), dx(0), dy(0), E(0), isPos(true) {}
-    // assumption: dy >= dx
-    BresenhamCore(ScreenPos a, ScreenPos b) {
-        // output(a); output(b);
-        // std::cout << " core initted" << std::endl;
+    BresenhamCore() : xL(0), dx(0), dy(0), E(0), isPos(true), isExcl(false) {}
+    BresenhamCore(ScreenPos a, ScreenPos b, bool flipExcl) {
         xL = a.x;
         dy = b.y - a.y;
         isPos = a.x <= b.x;
+        isExcl = isPos;
+        if (flipExcl) {
+            isExcl = !isExcl;
+        }
         if (isPos) {
             dx = b.x - a.x;
         } else {
             dx = a.x - b.x;
         }
         E = dy - dx;
-        if (!isPos) {
+        if (!isExcl && E == 0) {
             // E is "negated" compared to the positive algo
             // unfortunately E can equal 0 in the first step
-            if (E == 0) {
-                xL--;
-                E += 2 * dy - 2 * dx;
-            }
+            E += 2 * dy - 2 * dx;
+            inc();
         }
     }
+    // assumption: dy >= dx
+    BresenhamCore(ScreenPos a, ScreenPos b) : BresenhamCore(a, b, false) {
+    }
     int8_t bresenhamIter() {
-        return isPos ? bresenhamIterPos() : bresenhamIterNeg();
+        // in the real algorithm, the lowest E can get to is -dx.
+        // we've established since E is unsigned that the algorithm doesn't trigger
+        // the while loop in the first pass. so we can safely "rotate" the phase of the algorithm
+        // the point of rotating it is to keep it positive (add before subtracting)
+        int8_t ret = xL;
+        // if subtracting 2*dx would underflow...
+        bool shouldInc = E < 2*dx || (!isExcl && E == 2*dx);
+        if (shouldInc) {
+            inc();
+            E += 2 * dy - 2 * dx;
+        } else {
+            E -= 2*dx;
+        }
+        return ret;
     }
     int8_t curxL() {
         return xL;
@@ -136,7 +139,7 @@ class Bresenham {
                 last run of output.x is not included in output because input.y is exclusive
                 uses the last output.x of each run as true Y
                 */
-                ScreenPos aT = a.transpose(), bT = b.transpose();
+                ScreenPos aT = a.flip(), bT = b.flip();
                 if (aT.y > bT.y) {
                     std::swap(aT, bT);
                 }
@@ -146,7 +149,6 @@ class Bresenham {
                 std::cout << "fakeY=" << (int) fakeY << std::endl;
                 core = BresenhamCore(aT, bT);
             } else {
-                
                 core = BresenhamCore(a, b);
             }
         }
@@ -174,7 +176,7 @@ class Bresenham {
             } while(fakeX == prevFakeX);
             prevFakeX = fakeX;
 
-            return fakeY - 1;
+            return fakeY;
         } else {
             return core.bresenhamIter();
         }
