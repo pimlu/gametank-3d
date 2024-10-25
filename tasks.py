@@ -91,7 +91,7 @@ def build(c):
 def build_test(c):
     with c.cd(root_dir):
         c.run("mkdir -p build/tests")
-        c.run("clang++ --std=c++17 -lstdc++ -fsanitize=undefined -Isrc src/graphics/bresenham.cpp src/tests/bresenham_test.cpp -o build/tests/bresenham_test")
+        c.run("clang++ --std=c++17 -lstdc++ -fsanitize=undefined -Isrc -g src/graphics/bresenham.cpp src/tests/bresenham_test.cpp -o build/tests/bresenham_test")
 
 
 @task

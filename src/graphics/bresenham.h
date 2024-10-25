@@ -3,12 +3,17 @@
 #include <cstdint>
 #include <algorithm>
 
+
+#include <iostream>
+
 struct ScreenPos {
     int8_t x, y;
     inline ScreenPos transpose() {
         return {y, x};
     }
 };
+
+void output(ScreenPos p);
 
 // https://mcejp.github.io/2020/11/06/bresenham.html
 class BresenhamCore{
@@ -48,8 +53,13 @@ class BresenhamCore{
         return ret;
     }
 public:
+
+    // needed for annoying copy reasons
+    BresenhamCore() : xL(0), dx(0), dy(0), E(0), isPos(true) {}
     // assumption: dy >= dx
     BresenhamCore(ScreenPos a, ScreenPos b) {
+        // output(a); output(b);
+        // std::cout << " core initted" << std::endl;
         xL = a.x;
         dy = b.y - a.y;
         isPos = a.x <= b.x;
@@ -77,7 +87,7 @@ public:
 };
 
 inline int8_t mini8(int8_t a, int8_t b) {
-    return a >= b ? a : b;
+    return a <= b ? a : b;
 }
 inline uint8_t absDiffi8(int8_t a, int8_t b) {
     if (a >= b) {
@@ -107,48 +117,64 @@ inline uint8_t absDiffi8(int8_t a, int8_t b) {
 class Bresenham {
     bool isSwapped;
     BresenhamCore core;
-    int8_t y, prevX;
+    int8_t fakeY;
+    int8_t prevFakeX;
 
     static bool checkSwapped(ScreenPos a, ScreenPos b) {
-        return false;
         uint8_t dx = absDiffi8(a.x, b.x), dy = absDiffi8(a.y, b.y);
         return dx > dy;
     }
 
-    static BresenhamCore transposedCore(ScreenPos a, ScreenPos b) {
-        ScreenPos aTrans = a.transpose(), bTrans = b.transpose();
-        if (a.y > b.y) {
-            std::swap(a, b);
-        }
-        return BresenhamCore(a, b);
-    }
 
     public:
     Bresenham(ScreenPos a, ScreenPos b) :
-        isSwapped(checkSwapped(a, b)),
-        core(isSwapped ?
-            transposedCore(a, b) :
-            BresenhamCore(a, b)
-        ) {
+        isSwapped(checkSwapped(a, b)) {
             if (isSwapped) {
-                prevX = core.curxL();
-                y = mini8(a.x, b.x);
+                /*
+                observations
+                invariant: output length should be absDiffi8(aT.x, bT.x)
+                last run of output.x is not included in output because input.y is exclusive
+                uses the last output.x of each run as true Y
+                */
+                ScreenPos aT = a.transpose(), bT = b.transpose();
+                if (aT.y > bT.y) {
+                    std::swap(aT, bT);
+                }
+                prevFakeX = aT.x;
+                std::cout << "prevFakeX=" << (int) prevFakeX << std::endl;
+                fakeY = aT.y - 1;
+                std::cout << "fakeY=" << (int) fakeY << std::endl;
+                core = BresenhamCore(aT, bT);
             } else {
-                prevX = 0;
-                y = 0;
+                
+                core = BresenhamCore(a, b);
             }
         }
 
     int8_t bresenhamIter() {
         if (isSwapped) {
-            // it's transposed, so instead we need to "count the runs of the fake-X output"
-            int8_t x;
+            // // it's transposed, so instead we need to "count the runs of the fake-X output"
+            // do {
+            //     // bresenhamIter is returning "x" but it's actually y
+            //     y = core.bresenhamIter();
+            //     // std::cout << "x=" << (int) x << ", prevX=" << (int) prevX << std::endl;
+            //     x++;
+            // } while(y == prevY);
+            // prevY = y;
+            // return x;
+
+            int8_t fakeX;
             do {
-                x = core.bresenhamIter();
-                y++;
-            } while(x == prevX);
-            prevX = x;
-            return y;
+                fakeX = core.bresenhamIter();
+                // std::cout << (int) fakeX << " " << (int) fakeY << std::endl;
+                fakeY++;
+
+                std::cout << "at fX=" << (int) fakeX <<  ", fY=" << (int) fakeY << std::endl;
+                std::cout << (fakeX == prevFakeX ? "continuing." : "breaking.") << std::endl;
+            } while(fakeX == prevFakeX);
+            prevFakeX = fakeX;
+
+            return fakeY - 1;
         } else {
             return core.bresenhamIter();
         }
