@@ -94,7 +94,7 @@ struct BresTest {
         std::vector<std::vector<bool>> bits(h, std::vector<bool>(w,false));
 
         
-        fillTriangle<Bres>(a, b, c, [&](int8_t y, int8_t xLeft, int8_t xRight) {
+        fillTriangleGeneric<Bres>(a, b, c, [&](int8_t y, int8_t xLeft, int8_t xRight) {
             for (int x = xLeft; x < xRight; x++) {
                 bits[y][x] = true;
             }

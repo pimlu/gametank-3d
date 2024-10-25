@@ -20,7 +20,16 @@ int main() {
 
         scr.flipFramebuffer();
 
-        bcr.drawBox(0, 0, 127, 127, 0b010'00'100);
+        // bcr.drawBox(0, 0, 127, 127, 0b010'00'100);
+        // waitForInterrupt();
+
+        // bcr.drawBox(127, 0, 1, 127, 0b010'00'100);
+        // waitForInterrupt();
+
+        bcr.drawBox(0, 30, 8, 8, 92);
         waitForInterrupt();
+
+        // bcr.drawBox(127, 127, 1, 1, 0b010'00'100);
+        // waitForInterrupt();
     }
 }

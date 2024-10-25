@@ -11,7 +11,7 @@ struct ScreenPos {
     inline ScreenPos transpose() {
         return {y, x};
     }
-    
+
     inline ScreenPos flip() {
         return {(int8_t)-y, x};
     }
@@ -177,7 +177,7 @@ class Bresenham {
 };
 
 template<typename Bres, typename Fill> 
-void fillTriangle(ScreenPos a, ScreenPos b, ScreenPos c, Fill fill) {
+void fillTriangleGeneric(ScreenPos a, ScreenPos b, ScreenPos c, Fill fill) {
     // sort them so a.y <= b.y <= c.y
     if (a.y > b.y) std::swap(a, b);
     if (b.y > c.y) std::swap(b, c);
@@ -215,8 +215,9 @@ void fillTriangle(ScreenPos a, ScreenPos b, ScreenPos c, Fill fill) {
         fill(y, xLeft, xRight);
     }
 }
-// template<typename F>
-// void doubleBresenham(int8_t ylo, int8_t yhi, int8_t x0lo, int8_t x0hi,)
 
-// template<typename F>
 
+template<typename Fill>
+void fillTriangle(ScreenPos a, ScreenPos b, ScreenPos c, Fill fill) {
+    fillTriangleGeneric<Bresenham>(a, b, c, fill);
+}

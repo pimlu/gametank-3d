@@ -28,6 +28,14 @@ def list_glob(c, dir, pattern):
     output = result.stdout.split('\n')
     return [f for f in output if re.match(pattern, f)]
 
+
+def is_outdated(obj_file, cpp_file):
+    try:
+        otime = path.getmtime(obj_file)
+    except OSError:
+        return True
+    return otime <= path.getmtime(cpp_file)
+    
 def gt_run(c, cmd):
     return c.run(f"podman exec -t -w /workspace gametank {cmd}")
 
@@ -39,11 +47,15 @@ def build_asm_dir(c, dir):
             dst = path.join('build', src)
             dst = re.sub(r'\.asm$', '.o', dst)
 
+            objs.append(dst)
+
+            if not is_outdated(dst, src):
+                continue
+
             c.run(f"mkdir -p {path.dirname(dst)}")
             # can't use the magic -mcpu cause it hangs forever...
             gt_run(c, f"llvm-mc --filetype=obj -triple=mos '{src}' -o '{dst}'")
 
-            objs.append(dst)
     return objs
 
 
@@ -54,12 +66,16 @@ def build_cpp_dir(c, dir):
         for src in asm_files:
             dst = path.join('build', src)
             dst = re.sub(r'\.cpp$', '.o', dst)
+            
+            objs.append(dst)
+
+            if not is_outdated(dst, src):
+                continue
 
             c.run(f"mkdir -p {path.dirname(dst)}")
             # magic -mcpu came from llvm-mos pull #192
             gt_run(c, f"clang --std=c++17 -Os -fno-stack-protector -c -Xclang -triple=mos -mcpu=mosw65c02 -isystem /usr/local/mos-platform/common/include -Isrc '{src}' -o '{dst}'")
 
-            objs.append(dst)
     return objs
 
 def build_dir(c, dir):
