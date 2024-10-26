@@ -15,5 +15,11 @@ void clearBorder(uint8_t c) {
     bcr.drawBox(SCREEN_WIDTH-PADDING_RIGHT, 0, PADDING_RIGHT, SCREEN_HEIGHT-PADDING_BOT, c);
     waitForInterrupt();
 }
+void clearScreen(uint8_t c) {
+    bcr.drawBox(
+        FRAME_X_LO, FRAME_Y_LO,
+        FRAME_W, FRAME_H,
+        0b001'00'100);
+}
 
 }

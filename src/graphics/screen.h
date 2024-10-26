@@ -23,5 +23,6 @@ inline constexpr uint8_t FRAME_H = FRAME_Y_HI - FRAME_Y_LO;
 
 
 void clearBorder(uint8_t c);
+void clearScreen(uint8_t c);
 
 }
