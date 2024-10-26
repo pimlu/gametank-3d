@@ -2,9 +2,9 @@
 
 #include <cstdint>
 #include <algorithm>
-
-
 // #include <iostream>
+
+namespace graphics {
 
 struct ScreenPos {
     int8_t x, y;
@@ -96,23 +96,6 @@ inline uint8_t absDiffi8(int8_t a, int8_t b) {
         return b - a;
     }
 }
-
-/*
-
-
-
-2..
-5  ...
-6     .
-
-0. 
-0.
-1 .
-1 .
-1 .
-1  .
-
-*/
 
 class Bresenham {
     bool isSwapped;
@@ -220,4 +203,6 @@ void fillTriangleGeneric(ScreenPos a, ScreenPos b, ScreenPos c, Fill fill) {
 template<typename Fill>
 void fillTriangle(ScreenPos a, ScreenPos b, ScreenPos c, Fill fill) {
     fillTriangleGeneric<Bresenham>(a, b, c, fill);
+}
+
 }

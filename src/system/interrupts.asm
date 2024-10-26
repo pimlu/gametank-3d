@@ -1,4 +1,4 @@
-.section .text
+.section .text.fixed
 .global waitForInterrupt, vblankNmi, blitIsr, panicPls
 
 waitForInterrupt:
@@ -8,6 +8,7 @@ waitForInterrupt:
 vblankNmi:
     RTI
 blitIsr:
+    STZ 0x4006 ; DMA_Start
     RTI
 
 panicPls:

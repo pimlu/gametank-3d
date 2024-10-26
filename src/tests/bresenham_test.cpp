@@ -7,7 +7,7 @@
 #include <vector>
 #include <cstdlib>
 #include <random>
-
+namespace graphics {
 class BresenhamReferencePos{
     ScreenPos a, b;
 
@@ -298,10 +298,8 @@ uses the last output.x of each run as true Y
     return true;
 }
 
-
-const size_t ITERS = 1000000;
-int main(int argc, char** argv) {
-
+int doMain() {
+   
     std::cout << "running fixed test suite" << std::endl;
 
     for (auto &test : suite) {
@@ -392,5 +390,13 @@ int main(int argc, char** argv) {
     std::cout << "passed all tests" << std::endl;
     
 
-    return 0;
+    return 0; 
+}
+
+}
+
+
+const size_t ITERS = 1000000;
+int main(int argc, char** argv) {
+    return graphics::doMain();
 }

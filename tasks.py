@@ -54,7 +54,7 @@ def build_asm_dir(c, dir):
 
             c.run(f"mkdir -p {path.dirname(dst)}")
             # can't use the magic -mcpu cause it hangs forever...
-            gt_run(c, f"llvm-mc --filetype=obj -triple=mos '{src}' -o '{dst}'")
+            gt_run(c, f"llvm-mc --filetype=obj -triple=mos -mcpu=mosw65c02 '{src}' -o '{dst}'")
 
     return objs
 
@@ -66,7 +66,7 @@ def build_cpp_dir(c, dir):
         for src in asm_files:
             dst = path.join('build', src)
             dst = re.sub(r'\.cpp$', '.o', dst)
-            
+
             objs.append(dst)
 
             if not is_outdated(dst, src):
@@ -89,8 +89,9 @@ def build(c):
 
     drawbox_o = build_dir(c, "games/drawbox")
     system_o = build_dir(c, "system")
+    graphics_o = build_dir(c, "graphics")
 
-    objs = drawbox_o + system_o
+    objs = [*drawbox_o, *system_o, *graphics_o]
 
     with c.cd(root_dir):
         obj_args = ' '.join(f"'{o}'" for o in objs)

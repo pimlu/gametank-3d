@@ -6,6 +6,8 @@ __attribute__((section(".bss")))
 Bcr bcr;
 
 void Bcr::drawBox(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t c) {
+    asm("sei");
+
     scr.setColorfillMode(true);
 
     vx.write(x);
@@ -15,6 +17,7 @@ void Bcr::drawBox(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t c) {
     color.write(c);
     
     start.write(1);
+    asm("cli");
 }
 void Bcr::resetIrq() {
     start.write(0);

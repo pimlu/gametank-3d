@@ -22,7 +22,6 @@ uint8_t bits::oneShiftN(uint8_t n) {
     return lut[n];
 }
 
-bool debugIt = false;
 __attribute__((section(".text.fixed")))
 uint8_t bits::updateBit(uint8_t reg, uint8_t bit, bool val) {
     if (val) {
