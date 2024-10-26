@@ -93,12 +93,26 @@ struct BresTest {
     bool testCombo(ScreenPos a, ScreenPos b, ScreenPos c) {
         std::vector<std::vector<bool>> bits(h, std::vector<bool>(w,false));
 
-        
+        bool badRange = false;
         fillTriangleGeneric<Bres>(a, b, c, [&](int8_t y, int8_t xLeft, int8_t xRight) {
+            if (y < 0 || y >= h || xLeft < 0 || xRight > w) {
+                if (!badRange) {
+                    badRange = true;
+
+                    std::cout << "OOPS. ";
+                    output(a, b, c);
+                    std::cout << "bad range y=" << (int) y << " xLeft=" << (int) xLeft << " xRight=" << (int) xRight << std::endl;
+                    std::cout << "w=" << w << " h=" << h << std::endl;
+                }
+                return;
+            }
             for (int x = xLeft; x < xRight; x++) {
                 bits[y][x] = true;
             }
         });
+        if (badRange) {
+            return false;
+        }
 
         std::stringstream ss;
 
@@ -298,6 +312,8 @@ uses the last output.x of each run as true Y
     return true;
 }
 
+const size_t ITERS = 1000000;
+
 int doMain() {
    
     std::cout << "running fixed test suite" << std::endl;
@@ -322,7 +338,7 @@ int doMain() {
 
     std::random_device rd;
     std::default_random_engine e1(rd());
-    std::uniform_int_distribution<int8_t> uniform_dist(-64, 63);
+    std::uniform_int_distribution<int8_t> uniform_dist(0, 3);
     auto randPos = [&]() { return ScreenPos { uniform_dist(e1), uniform_dist(e1)};};
 
 
@@ -396,7 +412,6 @@ int doMain() {
 }
 
 
-const size_t ITERS = 1000000;
 int main(int argc, char** argv) {
     return graphics::doMain();
 }

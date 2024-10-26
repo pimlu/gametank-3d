@@ -23,11 +23,11 @@ inline void swapPos(ScreenPos &a, ScreenPos &b) {
     int8_t tmp;
 
     tmp = a.x;
-    a.x = a.y;
-    a.y = tmp;
+    a.x = b.x;
+    b.x = tmp;
 
-    tmp = b.x;
-    b.x = b.y;
+    tmp = a.y;
+    a.y = b.y;
     b.y = tmp;
 }
 
@@ -170,6 +170,9 @@ class Bresenham {
     
 };
 
+static int iter = 0;
+
+
 template<typename Bres, typename Fill> 
 void fillTriangleGeneric(ScreenPos a, ScreenPos b, ScreenPos c, Fill fill) {
     // sort them so a.y <= b.y <= c.y
@@ -191,7 +194,9 @@ void fillTriangleGeneric(ScreenPos a, ScreenPos b, ScreenPos c, Fill fill) {
     for (; y < b.y; y++) {
         int8_t xLeft = leftBres.bresenhamIter();
         int8_t xRight = rightBres.bresenhamIter();
-        fill(y, xLeft, xRight);
+        if (xLeft < xRight) {
+            fill(y, xLeft, xRight);
+        }
     }
 
     // we've now reached b (vertically speaking) and need to replace it with c
