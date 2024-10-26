@@ -5,6 +5,8 @@
 #include "system/interrupts.h"
 #include "graphics/screen.h"
 
+#include <graphics/bresenham.h>
+
 static volatile uint8_t cntr = 0;
 static volatile uint8_t slow = 0;
 
@@ -35,9 +37,8 @@ int main() {
         waitForInterrupt();
 
 
-        for (uint8_t i = 0; i < 40; i++) {
-            bcr.drawBox(70-i, 70-i, 1, 1, ~0b000'00'010);
-            waitForInterrupt();
-        }
+        graphics::fillTriangle({10,10}, {80,40}, {50,100}, [](uint8_t y, uint8_t xLeft, uint8_t xRight) {
+            bcr.drawBox(xLeft, y, xRight - xLeft, 1, ~0b000'00'010);
+        });
     }
 }

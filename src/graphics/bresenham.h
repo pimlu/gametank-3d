@@ -1,8 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include <algorithm>
-// #include <iostream>
+
 
 namespace graphics {
 
@@ -19,6 +18,18 @@ struct ScreenPos {
         return {y, (int8_t)-x};
     }
 };
+
+inline void swapPos(ScreenPos &a, ScreenPos &b) {
+    int8_t tmp;
+
+    tmp = a.x;
+    a.x = a.y;
+    a.y = tmp;
+
+    tmp = b.x;
+    b.x = b.y;
+    b.y = tmp;
+}
 
 void output(ScreenPos p);
 
@@ -123,7 +134,7 @@ class Bresenham {
                 */
                 ScreenPos aT = a.flip(), bT = b.flip();
                 if (aT.y > bT.y) {
-                    std::swap(aT, bT);
+                    swapPos(aT, bT);
                 }
                 prevFakeX = aT.x;
                 // std::cout << "prevFakeX=" << (int) prevFakeX << std::endl;
@@ -162,9 +173,9 @@ class Bresenham {
 template<typename Bres, typename Fill> 
 void fillTriangleGeneric(ScreenPos a, ScreenPos b, ScreenPos c, Fill fill) {
     // sort them so a.y <= b.y <= c.y
-    if (a.y > b.y) std::swap(a, b);
-    if (b.y > c.y) std::swap(b, c);
-    if (a.y > b.y) std::swap(a, b);
+    if (a.y > b.y) swapPos(a, b);
+    if (b.y > c.y) swapPos(b, c);
+    if (a.y > b.y) swapPos(a, b);
 
     bool bIsLeft = b.x <= c.x;
 
@@ -195,7 +206,9 @@ void fillTriangleGeneric(ScreenPos a, ScreenPos b, ScreenPos c, Fill fill) {
     for (; y < c.y; y++) {
         int8_t xLeft = leftBres.bresenhamIter();
         int8_t xRight = rightBres.bresenhamIter();
-        fill(y, xLeft, xRight);
+        if (xLeft < xRight) {
+            fill(y, xLeft, xRight);
+        }
     }
 }
 
