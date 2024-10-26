@@ -43,7 +43,9 @@ SECTIONS
     } > RAM
 
     .bss : {
+        _bss_start = .;
         *(.bss*)
+        _bss_end = .;
     } > RAM
 
 

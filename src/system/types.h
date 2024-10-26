@@ -14,13 +14,6 @@ template<uint16_t ADDR>
 struct memreg {
     uint8_t mirror = 0;
 
-    // uint8_t operator=(const uint8_t &rhs) {
-    //     mirror = rhs;
-    //     *(volatile uint8_t*) 0x2009 = 0xfe;
-    //     *(volatile uint8_t*) 0x2008 = mirror;
-    //     sync();
-    //     return mirror;
-    // }
     __attribute__((section(".text.fixed")))
     inline void write(uint8_t val) {
         // write ADDR first. this is important for the memory bank register
