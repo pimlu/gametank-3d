@@ -12,8 +12,14 @@ struct __attribute__((packed)) Bcr {
     memreg<0x4006> start;
     memreg<0x4007> color;
 
+
     void drawBox(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t c);
     void resetIrq();
+
+    void setupRowFill(uint8_t c);
+    void triggerRowFill(uint8_t x, uint8_t y, uint8_t w);
+    void rowFillWait();
+
 };
 
 extern Bcr bcr;

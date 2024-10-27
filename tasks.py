@@ -113,4 +113,4 @@ def build_test(c):
 
 @task
 def objdump(c):
-    gt_run(c, f'llvm-objdump -D --triple=mos build/drawbox')
+    gt_run(c, f'llvm-objdump -CD --triple=mos build/drawbox')

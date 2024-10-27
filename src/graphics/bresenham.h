@@ -1,23 +1,11 @@
 #pragma once
 
 #include <cstdint>
+#include <new>
 
+#include "types.h"
 
 namespace graphics {
-
-struct ScreenPos {
-    int8_t x, y;
-    inline ScreenPos transpose() {
-        return {y, x};
-    }
-
-    inline ScreenPos flip() {
-        return {(int8_t)-y, x};
-    }
-    inline ScreenPos unflip() {
-        return {y, (int8_t)-x};
-    }
-};
 
 inline void swapPos(ScreenPos &a, ScreenPos &b) {
     int8_t tmp;
@@ -49,9 +37,8 @@ class BresenhamCore{
     }
 
 public:
-
-    // needed for annoying copy reasons
-    BresenhamCore() : xL(0), dx(0), dy(0), E(0), isPos(true), isExcl(false) {}
+    // don't use this lol
+    BresenhamCore() {}
     BresenhamCore(ScreenPos a, ScreenPos b, bool flipExcl) {
         xL = a.x;
         dy = b.y - a.y;
@@ -120,6 +107,9 @@ class Bresenham {
         return dx > dy;
     }
     
+    // friends don't let friends memcpy bresenham
+    Bresenham(const Bresenham&) = delete;
+    Bresenham(Bresenham&&) = delete;
 
 
     public:
@@ -172,9 +162,8 @@ class Bresenham {
 
 static int iter = 0;
 
-
 template<typename Bres, typename Fill> 
-void fillTriangleGeneric(ScreenPos a, ScreenPos b, ScreenPos c, Fill fill) {
+void fillTriangleGeneric(ScreenPos a, ScreenPos b, ScreenPos c, Fill &&fill) {
     // sort them so a.y <= b.y <= c.y
     if (a.y > b.y) swapPos(a, b);
     if (b.y > c.y) swapPos(b, c);
@@ -201,10 +190,14 @@ void fillTriangleGeneric(ScreenPos a, ScreenPos b, ScreenPos c, Fill fill) {
 
     // we've now reached b (vertically speaking) and need to replace it with c
     if (bIsLeft) {
-        leftBres = Bres(b, c);
+        // I just want to avoid a memcpy lol...
+        // leftBres = Bres(b, c);
+        leftBres.~Bres();
+        new (&leftBres) Bres(b, c);
     } else {
-        rightBres = Bres(b, c);
-    
+        // rightBres = Bres(b, c);
+        rightBres.~Bres();
+        new (&rightBres) Bres(b, c);
     }
 
     // now, fill the "flat top triangle"
@@ -215,12 +208,6 @@ void fillTriangleGeneric(ScreenPos a, ScreenPos b, ScreenPos c, Fill fill) {
             fill(y, xLeft, xRight);
         }
     }
-}
-
-
-template<typename Fill>
-void fillTriangle(ScreenPos a, ScreenPos b, ScreenPos c, Fill fill) {
-    fillTriangleGeneric<Bresenham>(a, b, c, fill);
 }
 
 }
