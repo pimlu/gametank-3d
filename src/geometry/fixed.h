@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <limits>
 
+#include "imul.h"
+
 namespace geometry {
     
 
@@ -21,7 +23,7 @@ class Fixed16 {
     template<typename Dp, typename D2p, int8_t Mp>
     constexpr void shiftMulEqImpl(const Fixed16<Dp, D2p, Mp> &r) {
         // static_assert(Mp % 8 == 0);
-        int32_t res = ((int32_t) data) * ((int32_t) r.data);
+        int32_t res = geometry::imul16To32(data, r.data);
         data = (int16_t) (res >> Mp);
     }
 
@@ -112,7 +114,7 @@ public:
 
     constexpr Fixed16& operator*=(const Fixed16 &r) {
         // static_assert(M % 8 == 0);
-        int32_t res = ((int32_t) data) * ((int32_t) r.data);
+        int32_t res = geometry::imul16To32(data, r.data);
         data = (int16_t) (res >> M);
         return *this;
     }
@@ -140,7 +142,7 @@ public:
 
 
     constexpr void scaleByUint8(uint8_t scale) {
-        int32_t res = ((int32_t) data) *((int32_t) scale);
+        int32_t res = geometry::imul16To32(data, scale);
         data = (int16_t) (res >> 8);
     }
 };

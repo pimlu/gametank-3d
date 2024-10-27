@@ -1,4 +1,5 @@
 #include <iostream>
+#include <random>
 
 #include "geometry/recip_lut.h"
 #include "geometry/fixed_etc.h"
@@ -63,9 +64,24 @@ void checkProj() {
     std::cout << (int) x << ", " << (int) y << std::endl;
 }
 
+
 // not really a test, just random junk
 int main(int argc, char** argv) {
     // checkLookup();
     // checkRatio();
-    checkProj();
+    // checkProj();
+
+    std::random_device rd;
+    std::default_random_engine e1(rd());
+    std::uniform_int_distribution<int16_t> uniform_dist(-10, 10);
+
+    for (int i=0; i<1000; i++) {
+        int16_t x = uniform_dist(e1);
+        int16_t y = uniform_dist(e1);
+        if (x*(int32_t)y != geometry::imul16To32(x, y)) {
+            std::cout << (int)x << " " << (int) y << " " << geometry::imul16To32(x, y) << std::endl;
+            return 1;
+        }
+    }
+
 }

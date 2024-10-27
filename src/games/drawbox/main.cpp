@@ -49,9 +49,7 @@ int main() {
         if (count++ == 10) {
             count = 0;
         }
-        geometry::initMultiplication();
-        int32_t foo = geometry::imul16To32(2, 3);
-        *(volatile int16_t*) 0x2008 = (int16_t) foo;
+        // geometry::initMultiplication();
 
         // int8_t basisX = -50;
         // int8_t basisY = -50;
