@@ -7,6 +7,7 @@
 
 #include "graphics/triangle.h"
 #include "geometry/polygons.h"
+#include "geometry/imul.h"
 
 static volatile uint8_t cntr = 0;
 static volatile uint8_t slow = 0;
@@ -48,6 +49,10 @@ int main() {
         if (count++ == 10) {
             count = 0;
         }
+        geometry::initMultiplication();
+        int32_t foo = geometry::imul16To32(2, 3);
+        *(volatile int16_t*) 0x2008 = (int16_t) foo;
+
         // int8_t basisX = -50;
         // int8_t basisY = -50;
         // for (int8_t x = 0; x < 6; x++) {
@@ -64,6 +69,8 @@ int main() {
 
         // *(volatile uint8_t*) 0x2009 = count + 1;
 
+        geometry::fillTriangle({-1.0,-1.0,z}, {1.0,3.0,z}, {2.0,-2.0,z}, ~0b000'01'110);
+        geometry::fillTriangle({-1.0,-1.0,z}, {1.0,3.0,z}, {2.0,-2.0,z}, ~0b000'01'110);
         geometry::fillTriangle({-1.0,-1.0,z}, {1.0,3.0,z}, {2.0,-2.0,z}, ~0b000'01'110);
 
         // graphics::fillTriangle({-24, -24}, {24, 73}, {49, -49}, ~0b000'01'110);

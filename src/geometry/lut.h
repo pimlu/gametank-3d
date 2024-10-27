@@ -11,7 +11,7 @@ constexpr uint8_t bitShift(int16_t x, uint8_t shift = 0) {
 
 // step bits should be <= 8
 template<typename Inp, Inp START, Inp STEP, typename Out>
-struct Lut {
+struct alignas(256) Lut {
     static constexpr int16_t STEP_RAW = STEP.getRaw();
     static constexpr uint8_t STEP_BITS = bitShift(STEP_RAW);
     static constexpr Inp END = START + STEP.smallIntMult(256);

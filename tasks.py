@@ -7,9 +7,17 @@ import re
 root_dir = path.dirname(__file__)
 
 
-use_lto = True
+
+
+# zp_free_bytes = 0x100 - 0x40
+
+# # imul.asm: 120 bytes
+# zp_free_bytes -= 20
+# # -mlto-zp={zp_free_bytes}
+
+use_lto = False
 cxx_lto_flags = "-emit-llvm -flto" if use_lto else ""
-ldd_lto_flags = "-flto" if use_lto else ""
+ldd_lto_flags = f"-flto " if use_lto else ""
 
 @task
 def clean(c):
@@ -78,7 +86,7 @@ def build_cpp_dir(c, dir):
 
             c.run(f"mkdir -p {path.dirname(dst)}")
             # magic -mcpu came from llvm-mos pull #192
-            gt_run(c, f"clang --std=c++20 -O3 {cxx_lto_flags} -fnonreentrant -fno-stack-protector -c -Xclang -triple=mos -mcpu=mosw65c02 -isystem /usr/local/mos-platform/common/include -Isrc '{src}' -o '{dst}'")
+            gt_run(c, f"clang --std=c++20 -O3 {cxx_lto_flags} -fnonreentrant -fno-stack-protector -c -Xclang -triple=mos -mcpu=mosw65c02 -DIS_6502 -isystem /usr/local/mos-platform/common/include -Isrc '{src}' -o '{dst}'")
 
     return objs
 
