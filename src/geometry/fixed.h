@@ -42,19 +42,15 @@ public:
     }
 
     constexpr uint8_t lsb() const {
-        return *(uint8_t*) &data;
+        return data & 0xff;
     }
 
     constexpr uint8_t msb() const {
-        auto ptr = (uint8_t*) &data;
-        return ptr[1];
+        return (data >> 8) & 0xff;
     }
     constexpr static Fixed16 fromRaw(uint8_t lsb, uint8_t msb) {
-        int16_t data = 0;
-        auto ptr = (uint8_t*) &data;
-        ptr[0] = lsb;
-        ptr[1] = msb;
-        return fromRaw(data);
+        D data = (msb << 8) | lsb;
+        return Fixed16(data);
     }
     
     constexpr bool operator==(const Fixed16& rhs) const {
@@ -84,7 +80,7 @@ public:
 
     
     constexpr Fixed16 operator-() const {
-        return Fixed16(-data);
+        return fromRaw(-data);
     }
     constexpr void negate() {
         data = -data;

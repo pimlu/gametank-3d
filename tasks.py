@@ -116,7 +116,7 @@ def build_test(c):
     with c.cd(root_dir):
         c.run("mkdir -p build/tests")
         c.run("clang++ --std=c++20 -lstdc++ -fsanitize=undefined -Isrc -g src/tests/bresenham_test.cpp -o build/tests/bresenham_test")
-        c.run("clang++ --std=c++20 -lstdc++ -fsanitize=undefined -Isrc -g src/geometry/fixed_big.cpp src/geometry/recip_lut.cpp src/tests/recip_lut_test.cpp -o build/tests/recip_lut_test")
+        c.run("clang++ --std=c++20 -lstdc++ -fsanitize=undefined -Isrc -g src/geometry/fixed_etc.cpp src/geometry/projection.cpp src/geometry/recip_lut.cpp src/tests/recip_lut_test.cpp -o build/tests/recip_lut_test")
 
 
 @task

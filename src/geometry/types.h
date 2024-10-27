@@ -13,6 +13,9 @@ using ScreenF = Fixed16<int16_t, int32_t, 12>;
 struct Coord {
     GeoF x, y, z;
 };
+struct ScreenCoord {
+    GeoF x, y;
+};
 
 }
 

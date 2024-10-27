@@ -3,5 +3,5 @@
 namespace geometry {
 
 __attribute__((section(".rodata")))
-RecipLut recipLut;
+const RecipLut recipLut;
 }

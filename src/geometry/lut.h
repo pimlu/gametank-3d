@@ -37,11 +37,11 @@ struct Lut {
     }
 
 
-    Out getEntry(uint8_t idx) {
+    Out getEntry(uint8_t idx) const {
         return Out::fromRaw(lsb[idx], msb[idx]);
     }
 
-    Out lerp (Out a, Out b, uint8_t frac) {
+    Out lerp (Out a, Out b, uint8_t frac) const {
         // std::cout << "lerp" << std::endl;
         // std::cout << (int) frac << std::endl;
         constexpr uint8_t REM_BITS = 8 - STEP_BITS;
@@ -51,19 +51,23 @@ struct Lut {
         return a + b;
     }
 
-    Out lookupOrConst(Inp x, Out missVal) {
+    Out lookupOrConst(Inp x, Out missVal) const {
         if (x < START) return missVal;
         if (END != START && x >= END) return missVal;
         Inp shifted = x - START;
         int16_t shiftedBits = shifted.getRaw();
-        // std::cout << "lookup " << shifted.toDouble() << std::endl;
-        // std::cout << "bits" << (int) shiftedBits<< std::endl;
+        // // std::cout << "lookup " << shifted.toDouble() << std::endl;
+        // // std::cout << "bits" << (int) shiftedBits<< std::endl;
         uint8_t idx = shiftedBits >> STEP_BITS;
         uint8_t frac = shiftedBits & STEP_MASK;
+
+        // *(volatile int16_t*) 0x2008 = 0xbeef;
         if (!frac) {
             return getEntry(idx);
         }
-        return lerp(getEntry(idx), getEntry(idx+1), frac);
+        Out res = lerp(getEntry(idx), getEntry(idx+1), frac);
+
+        return res;
     }
 };
 

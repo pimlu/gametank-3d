@@ -1,24 +1,30 @@
 #include "projection.h"
 
 #include "recip_lut.h"
+#include "fixed_etc.h"
 
 namespace geometry {
 
-Coord ProjectionMatrix::project(Coord c) {
-    c.z.negate();
-    UnitF div = recipLut.lookup(c.z);
-    GeoF pxAdj = px.shiftMul(div);
+ScreenCoord ProjectionMatrix::project(Coord c) const {
+    UnitF div = recipLut.lookup(-c.z);
+    
+    GeoF x = mulRatio(c.x, px, div);
+    GeoF y = mulRatio(c.y, py, div);
 
-    // w.shiftMul(pw);
+    return {x, y};
+}
 
+graphics::ScreenPos ProjectionMatrix::projectScreen(Coord c) const {
+    ScreenCoord s = project(c);
+    int8_t x = roundGeoF(s.x), y = roundGeoF(s.y);
+    return {x, y};
+}
 
-    c.x *= px;
-    c.y.shiftMul(py);
-    c.z -= near;
-    c.z *= dyRange;
-
-
-
+GeoF ProjectionMatrix::projectZ(Coord c) const {
+    GeoF z = -c.z;
+    z -= near;
+    z *= dyRange;
+    return z;
 }
 
 ProjectionMatrix ProjectionMatrix::defaultMatrix() {

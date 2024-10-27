@@ -7,6 +7,7 @@
 
 namespace geometry {
 
-GeoF mulRatio(GeoF x, GeoF num, GeoF den);
+GeoF mulRatio(GeoF x, GeoF num, UnitF den);
+int8_t roundGeoF(GeoF x);
 
 }

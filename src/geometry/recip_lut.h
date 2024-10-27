@@ -13,7 +13,7 @@ struct RecipLut {
 
     Lut<GeoF, GeoF(START), GeoF(STEP), UnitF> lut; 
 
-    constexpr RecipLut() : lut() {
+    consteval RecipLut() : lut() {
         double cur = START;
         // 1 is slightly outside the range lol
         lut.setEntry(0, UnitF::fromRaw(0xffff));
@@ -25,11 +25,11 @@ struct RecipLut {
             cur += STEP;
         }
     }
-    UnitF lookup(GeoF x) {
+    constexpr UnitF lookup(GeoF x) const {
         return lut.lookupOrConst(x, 0.0);
     }
 };
 
-extern RecipLut recipLut;
+extern const RecipLut recipLut;
 
 }

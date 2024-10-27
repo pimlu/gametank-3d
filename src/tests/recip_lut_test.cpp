@@ -1,7 +1,8 @@
 #include <iostream>
 
 #include "geometry/recip_lut.h"
-#include "geometry/fixed_big.h"
+#include "geometry/fixed_etc.h"
+#include "geometry/projection.h"
 
 
 using namespace geometry;
@@ -39,13 +40,32 @@ void checkRatio() {
 
     GeoF x = 2.5, num = 3.0, den = 1.5;
 
-    GeoF res = mulRatio(x, num, den);
+    GeoF res = mulRatio(x, num, recipLut.lookup(den));
     std::cout << res.toDouble() << std::endl;
 
+}
+
+void checkProj() {
+    auto mat = geometry::ProjectionMatrix::defaultMatrix();
+    auto res = mat.project({-1.0,-1.0,-4.0});
+    int8_t x = roundGeoF(res.x), y = roundGeoF(res.y);
+    std::cout << res.x.toDouble() << ", " << res.y.toDouble() << std::endl;
+    std::cout << (int) x << ", " << (int) y << std::endl;
+
+    res = mat.project({1.0,3.0,-4.0});
+    x = roundGeoF(res.x), y = roundGeoF(res.y);
+    std::cout << res.x.toDouble() << ", " << res.y.toDouble() << std::endl;
+    std::cout << (int) x << ", " << (int) y << std::endl;
+
+    res = mat.project({2.0,-2.0,-4.0});
+    x = roundGeoF(res.x), y = roundGeoF(res.y);
+    std::cout << res.x.toDouble() << ", " << res.y.toDouble() << std::endl;
+    std::cout << (int) x << ", " << (int) y << std::endl;
 }
 
 // not really a test, just random junk
 int main(int argc, char** argv) {
     // checkLookup();
-    checkRatio();
+    // checkRatio();
+    checkProj();
 }
