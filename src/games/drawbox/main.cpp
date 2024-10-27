@@ -7,6 +7,8 @@
 
 #include "graphics/triangle.h"
 
+#include "geometry/fixed_big.h"
+
 static volatile uint8_t cntr = 0;
 static volatile uint8_t slow = 0;
 
@@ -25,6 +27,14 @@ int main() {
 
 
     scr.setEnableVblankNmi(true);
+
+    volatile int16_t raw = geometry::GeoF(1.5).getRaw();
+    geometry::GeoF foo = geometry::GeoF::fromRaw(raw);
+    raw = geometry::GeoF(5.0).getRaw();
+    geometry::GeoF bar = geometry::GeoF::fromRaw(raw);
+    raw = geometry::GeoF(2.5).getRaw();
+    geometry::GeoF baz = geometry::GeoF::fromRaw(raw);
+    *(volatile uint16_t*) 0x2008 = geometry::mulRatio(foo, bar, baz).getRaw();
 
     int8_t count = 0;
     while (true) {

@@ -78,7 +78,7 @@ def build_cpp_dir(c, dir):
 
             c.run(f"mkdir -p {path.dirname(dst)}")
             # magic -mcpu came from llvm-mos pull #192
-            gt_run(c, f"clang --std=c++17 -O3 {cxx_lto_flags} -fnonreentrant -fno-stack-protector -c -Xclang -triple=mos -mcpu=mosw65c02 -isystem /usr/local/mos-platform/common/include -Isrc '{src}' -o '{dst}'")
+            gt_run(c, f"clang --std=c++20 -O3 {cxx_lto_flags} -fnonreentrant -fno-stack-protector -c -Xclang -triple=mos -mcpu=mosw65c02 -isystem /usr/local/mos-platform/common/include -Isrc '{src}' -o '{dst}'")
 
     return objs
 
@@ -92,10 +92,11 @@ def build(c):
     ensure_container_running(c)
 
     drawbox_o = build_dir(c, "games/drawbox")
-    system_o = build_dir(c, "system")
+    geometry_o = build_dir(c, "geometry")
     graphics_o = build_dir(c, "graphics")
+    system_o = build_dir(c, "system")
 
-    objs = [*drawbox_o, *system_o, *graphics_o]
+    objs = [*drawbox_o, *geometry_o, *graphics_o, *system_o]
 
     with c.cd(root_dir):
         obj_args = ' '.join(f"'{o}'" for o in objs)
@@ -114,7 +115,8 @@ def build(c):
 def build_test(c):
     with c.cd(root_dir):
         c.run("mkdir -p build/tests")
-        c.run("clang++ --std=c++17 -lstdc++ -fsanitize=undefined -Isrc -g src/tests/bresenham_test.cpp -o build/tests/bresenham_test")
+        c.run("clang++ --std=c++20 -lstdc++ -fsanitize=undefined -Isrc -g src/tests/bresenham_test.cpp -o build/tests/bresenham_test")
+        c.run("clang++ --std=c++20 -lstdc++ -fsanitize=undefined -Isrc -g src/geometry/fixed_big.cpp src/geometry/recip_lut.cpp src/tests/recip_lut_test.cpp -o build/tests/recip_lut_test")
 
 
 @task

@@ -12,6 +12,8 @@ void fillTriangle(ScreenPos a, ScreenPos b, ScreenPos c, uint8_t color) {
 
     bcr.setupRowFill(color);
     fillTriangleGeneric<Bresenham>(a, b, c, [&](int8_t y, int8_t xLeft, int8_t xRight) {
+        // change y to point up
+        y = -y;
         // check for clipping and remove
         if (y < SCENE_Y_LO || y >= SCENE_Y_HI) {
             return;
@@ -23,7 +25,7 @@ void fillTriangle(ScreenPos a, ScreenPos b, ScreenPos c, uint8_t color) {
         }
         int8_t width = xRight - xLeft;
 
-        // switch from scene coordinates (origin at center of screen) to
+        // switch from scene coordinates (origin at center of screen, -y) to
         // frame coordinates (what the blitter uses, origin at top left) 
         xLeft += SCENE_X_TO_FRAME;
         y += SCENE_Y_TO_FRAME;

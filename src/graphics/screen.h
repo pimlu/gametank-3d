@@ -24,8 +24,9 @@ inline constexpr uint8_t FRAME_H = FRAME_Y_HI - FRAME_Y_LO;
 
 inline constexpr int8_t SCENE_X_LO = 0 - (FRAME_W + 1) / 2;
 inline constexpr int8_t SCENE_X_HI = 0 + (FRAME_W    ) / 2;
-inline constexpr int8_t SCENE_Y_LO = 0 - (FRAME_H + 1) / 2;
-inline constexpr int8_t SCENE_Y_HI = 0 + (FRAME_H    ) / 2;
+// Y is inverted so invert the rounding I guess
+inline constexpr int8_t SCENE_Y_LO = 0 - (FRAME_H    ) / 2;
+inline constexpr int8_t SCENE_Y_HI = 0 + (FRAME_H + 1) / 2;
 
 inline constexpr int8_t SCENE_X_TO_FRAME = ((int8_t)FRAME_X_LO) - SCENE_X_LO;
 inline constexpr int8_t SCENE_Y_TO_FRAME = ((int8_t)FRAME_Y_LO) - SCENE_Y_LO;
