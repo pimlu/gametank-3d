@@ -99,24 +99,24 @@ def build_dir(c, dir):
 def build(c):
     ensure_container_running(c)
 
-    drawbox_o = build_dir(c, "games/drawbox")
+    triangles_o = build_dir(c, "games/triangles")
     geometry_o = build_dir(c, "geometry")
     graphics_o = build_dir(c, "graphics")
     system_o = build_dir(c, "system")
 
-    objs = [*drawbox_o, *geometry_o, *graphics_o, *system_o]
+    objs = [*triangles_o, *geometry_o, *graphics_o, *system_o]
 
     with c.cd(root_dir):
         obj_args = ' '.join(f"'{o}'" for o in objs)
         ### original command used to figure out the linker command:
-        # gt_run(c, f'clang --verbose -Xclang -triple=mos -T link.ld -L /usr/local/mos-platform/common/lib -o build/drawbox {obj_args}')
+        # gt_run(c, f'clang --verbose -Xclang -triple=mos -T link.ld -L /usr/local/mos-platform/common/lib -o build/triangles {obj_args}')
         ### original linker command:
-        # gt_run(c, '"/usr/local/bin/ld.lld" --gc-sections --sort-section=alignment build/src/games/drawbox/main.o build/src/system/interrupts.o build/src/system/bcr.o build/src/system/via.o build/src/system/boot.o build/src/system/scr.o build/src/system/types.o -plugin-opt=-function-sections=1 -plugin-opt=-data-sections=1 -mllvm -force-precise-rotation-cost -mllvm -jump-inst-cost=6 -mllvm -force-loop-cold-block -mllvm -phi-node-folding-threshold=0 -mllvm -speculate-blocks=0 -mllvm -align-large-globals=false -mllvm -disable-spill-hoist -mllvm -lsr-complexity-limit=10000000 -L/usr/local/lib/clang/19/lib/mos-unknown-unknown -T link.ld -L/usr/local/mos-platform/common/lib -l:crt0.o -lcrt0 -lcrt -lc -o build/drawbox')
+        # gt_run(c, '"/usr/local/bin/ld.lld" --gc-sections --sort-section=alignment build/src/games/triangles/main.o build/src/system/interrupts.o build/src/system/bcr.o build/src/system/via.o build/src/system/boot.o build/src/system/scr.o build/src/system/types.o -plugin-opt=-function-sections=1 -plugin-opt=-data-sections=1 -mllvm -force-precise-rotation-cost -mllvm -jump-inst-cost=6 -mllvm -force-loop-cold-block -mllvm -phi-node-folding-threshold=0 -mllvm -speculate-blocks=0 -mllvm -align-large-globals=false -mllvm -disable-spill-hoist -mllvm -lsr-complexity-limit=10000000 -L/usr/local/lib/clang/19/lib/mos-unknown-unknown -T link.ld -L/usr/local/mos-platform/common/lib -l:crt0.o -lcrt0 -lcrt -lc -o build/triangles')
         ### modified linker command: (took out some libraries)
-        # gt_run(c, f'ld.lld --sort-section=alignment {obj_args} -plugin-opt=-function-sections=1 -plugin-opt=-data-sections=1 -mllvm -force-precise-rotation-cost -mllvm -jump-inst-cost=6 -mllvm -force-loop-cold-block -mllvm -phi-node-folding-threshold=0 -mllvm -speculate-blocks=0 -mllvm -align-large-globals=false -mllvm -disable-spill-hoist -mllvm -lsr-complexity-limit=10000000 -L/usr/local/lib/clang/19/lib/mos-unknown-unknown -T link.ld -L/usr/local/mos-platform/common/lib -l:crt0.o -lcrt0  -o build/drawbox')
+        # gt_run(c, f'ld.lld --sort-section=alignment {obj_args} -plugin-opt=-function-sections=1 -plugin-opt=-data-sections=1 -mllvm -force-precise-rotation-cost -mllvm -jump-inst-cost=6 -mllvm -force-loop-cold-block -mllvm -phi-node-folding-threshold=0 -mllvm -speculate-blocks=0 -mllvm -align-large-globals=false -mllvm -disable-spill-hoist -mllvm -lsr-complexity-limit=10000000 -L/usr/local/lib/clang/19/lib/mos-unknown-unknown -T link.ld -L/usr/local/mos-platform/common/lib -l:crt0.o -lcrt0  -o build/triangles')
 
-        gt_run(c, f'clang --verbose {ldd_lto_flags} -O3 -fno-stack-protector -Xclang -triple=mos -mcpu=mosw65c02 -T link.ld -L /usr/local/mos-platform/common/lib -o build/drawbox {obj_args}')
-        gt_run(c, f'llvm-objcopy -O binary build/drawbox build/drawbox.gtr')
+        gt_run(c, f'clang --verbose {ldd_lto_flags} -O3 -fno-stack-protector -Xclang -triple=mos -mcpu=mosw65c02 -T link.ld -L /usr/local/mos-platform/common/lib -o build/triangles {obj_args}')
+        gt_run(c, f'llvm-objcopy -O binary build/triangles build/triangles.gtr')
     
 
 @task
@@ -129,4 +129,4 @@ def build_test(c):
 
 @task
 def objdump(c):
-    gt_run(c, f'llvm-objdump -CD --triple=mos build/drawbox')
+    gt_run(c, f'llvm-objdump -CD --triple=mos build/triangles')
