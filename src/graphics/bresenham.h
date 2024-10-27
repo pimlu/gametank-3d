@@ -4,6 +4,7 @@
 #include <new>
 
 #include "types.h"
+#include "i8helpers.h"
 
 namespace graphics {
 
@@ -25,7 +26,7 @@ void output(ScreenPos p);
 class BresenhamCore{
     int8_t xL;
 
-    uint8_t dx, dy;
+    uint8_t twoDx, twoDySubTwoDx;
 
     uint8_t E;
     bool isPos;
@@ -41,22 +42,27 @@ public:
     BresenhamCore() {}
     BresenhamCore(ScreenPos a, ScreenPos b, bool flipExcl) {
         xL = a.x;
-        dy = b.y - a.y;
+        uint8_t dy = b.y - a.y;
         isPos = a.x <= b.x;
         isExcl = isPos;
         if (flipExcl) {
             isExcl = !isExcl;
         }
+        uint8_t dx;
         if (isPos) {
             dx = b.x - a.x;
         } else {
             dx = a.x - b.x;
         }
         E = dy - dx;
+
+        twoDySubTwoDx = 2*dy - 2*dx;
+        twoDx = 2*dx;
+
         if (!isExcl && E == 0) {
             // E is "negated" compared to the positive algo
             // unfortunately E can equal 0 in the first step
-            E += 2 * dy - 2 * dx;
+            E += twoDySubTwoDx;
             inc();
         }
     }
@@ -70,12 +76,12 @@ public:
         // the point of rotating it is to keep it positive (add before subtracting)
         int8_t ret = xL;
         // if subtracting 2*dx would underflow...
-        bool shouldInc = E < 2*dx || (!isExcl && E == 2*dx);
+        bool shouldInc = E < twoDx || (!isExcl && E == twoDx);
         if (shouldInc) {
             inc();
-            E += 2 * dy - 2 * dx;
+            E += twoDySubTwoDx;
         } else {
-            E -= 2*dx;
+            E -= twoDx;
         }
         return ret;
     }
@@ -84,16 +90,6 @@ public:
     }
 };
 
-inline int8_t mini8(int8_t a, int8_t b) {
-    return a <= b ? a : b;
-}
-inline uint8_t absDiffi8(int8_t a, int8_t b) {
-    if (a >= b) {
-        return a - b;
-    } else {
-        return b - a;
-    }
-}
 
 class Bresenham {
     bool isSwapped;
@@ -183,9 +179,7 @@ void fillTriangleGeneric(ScreenPos a, ScreenPos b, ScreenPos c, Fill &&fill) {
     for (; y < b.y; y++) {
         int8_t xLeft = leftBres.bresenhamIter();
         int8_t xRight = rightBres.bresenhamIter();
-        if (xLeft < xRight) {
-            fill(y, xLeft, xRight);
-        }
+        fill(y, xLeft, xRight);
     }
 
     // we've now reached b (vertically speaking) and need to replace it with c
@@ -204,9 +198,7 @@ void fillTriangleGeneric(ScreenPos a, ScreenPos b, ScreenPos c, Fill &&fill) {
     for (; y < c.y; y++) {
         int8_t xLeft = leftBres.bresenhamIter();
         int8_t xRight = rightBres.bresenhamIter();
-        if (xLeft < xRight) {
-            fill(y, xLeft, xRight);
-        }
+        fill(y, xLeft, xRight);
     }
 }
 

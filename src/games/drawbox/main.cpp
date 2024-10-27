@@ -36,16 +36,18 @@ int main() {
         graphics::clearScreen(0b001'00'100);
         waitForInterrupt();
 
-        if (++count == 10) {
+        if (count++ == 10) {
             count = 0;
         }
-        for (int8_t x = 0; x < 4; x++) {
-            for (int8_t y = 0; y < 2; y++) {
-                int8_t dx = x * 20 + count, dy = y * 20;
+        int8_t basisX = -50;
+        int8_t basisY = -50;
+        for (int8_t x = 0; x < 6; x++) {
+            for (int8_t y = 0; y < 6; y++) {
+                int8_t dx = x * 15 + count, dy = y * 15;
                 graphics::fillTriangle(
-                    {(int8_t) (dx + 10), (int8_t) (dy + 10)},
-                    {(int8_t) (dx + 20), (int8_t) (dy + 25)},
-                    {(int8_t) (dx + 30), (int8_t) (dy + 10)}, ~0b000'01'110);
+                    {(int8_t) (basisX + dx), (int8_t) (basisY + dy)},
+                    {(int8_t) (basisX + dx + 10), (int8_t) (basisY + dy + 15)},
+                    {(int8_t) (basisX + dx + 40), (int8_t) (basisY + dy)}, ~0b000'01'110);
             }
 
         }

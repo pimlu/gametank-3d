@@ -7,6 +7,10 @@ import re
 root_dir = path.dirname(__file__)
 
 
+use_lto = True
+cxx_lto_flags = "-emit-llvm -flto" if use_lto else ""
+ldd_lto_flags = "-flto" if use_lto else ""
+
 @task
 def clean(c):
     with c.cd(root_dir):
@@ -74,7 +78,7 @@ def build_cpp_dir(c, dir):
 
             c.run(f"mkdir -p {path.dirname(dst)}")
             # magic -mcpu came from llvm-mos pull #192
-            gt_run(c, f"clang --std=c++17 -Os -fno-stack-protector -c -Xclang -triple=mos -mcpu=mosw65c02 -isystem /usr/local/mos-platform/common/include -Isrc '{src}' -o '{dst}'")
+            gt_run(c, f"clang --std=c++17 -O3 {cxx_lto_flags} -fnonreentrant -fno-stack-protector -c -Xclang -triple=mos -mcpu=mosw65c02 -isystem /usr/local/mos-platform/common/include -Isrc '{src}' -o '{dst}'")
 
     return objs
 
@@ -100,7 +104,9 @@ def build(c):
         ### original linker command:
         # gt_run(c, '"/usr/local/bin/ld.lld" --gc-sections --sort-section=alignment build/src/games/drawbox/main.o build/src/system/interrupts.o build/src/system/bcr.o build/src/system/via.o build/src/system/boot.o build/src/system/scr.o build/src/system/types.o -plugin-opt=-function-sections=1 -plugin-opt=-data-sections=1 -mllvm -force-precise-rotation-cost -mllvm -jump-inst-cost=6 -mllvm -force-loop-cold-block -mllvm -phi-node-folding-threshold=0 -mllvm -speculate-blocks=0 -mllvm -align-large-globals=false -mllvm -disable-spill-hoist -mllvm -lsr-complexity-limit=10000000 -L/usr/local/lib/clang/19/lib/mos-unknown-unknown -T link.ld -L/usr/local/mos-platform/common/lib -l:crt0.o -lcrt0 -lcrt -lc -o build/drawbox')
         ### modified linker command: (took out some libraries)
-        gt_run(c, f'ld.lld --sort-section=alignment {obj_args} -plugin-opt=-function-sections=1 -plugin-opt=-data-sections=1 -mllvm -force-precise-rotation-cost -mllvm -jump-inst-cost=6 -mllvm -force-loop-cold-block -mllvm -phi-node-folding-threshold=0 -mllvm -speculate-blocks=0 -mllvm -align-large-globals=false -mllvm -disable-spill-hoist -mllvm -lsr-complexity-limit=10000000 -L/usr/local/lib/clang/19/lib/mos-unknown-unknown -T link.ld -L/usr/local/mos-platform/common/lib -l:crt0.o -lcrt0  -o build/drawbox')
+        # gt_run(c, f'ld.lld --sort-section=alignment {obj_args} -plugin-opt=-function-sections=1 -plugin-opt=-data-sections=1 -mllvm -force-precise-rotation-cost -mllvm -jump-inst-cost=6 -mllvm -force-loop-cold-block -mllvm -phi-node-folding-threshold=0 -mllvm -speculate-blocks=0 -mllvm -align-large-globals=false -mllvm -disable-spill-hoist -mllvm -lsr-complexity-limit=10000000 -L/usr/local/lib/clang/19/lib/mos-unknown-unknown -T link.ld -L/usr/local/mos-platform/common/lib -l:crt0.o -lcrt0  -o build/drawbox')
+
+        gt_run(c, f'clang --verbose {ldd_lto_flags} -O3 -fno-stack-protector -Xclang -triple=mos -mcpu=mosw65c02 -T link.ld -L /usr/local/mos-platform/common/lib -o build/drawbox {obj_args}')
         gt_run(c, f'llvm-objcopy -O binary build/drawbox build/drawbox.gtr')
     
 
