@@ -51,6 +51,8 @@ int main() {
         }
         // geometry::initMultiplication();
 
+        *(volatile uint16_t*) 0x2008 = geometry::mul8To16(255, 3);
+
         // int8_t basisX = -50;
         // int8_t basisY = -50;
         // for (int8_t x = 0; x < 6; x++) {

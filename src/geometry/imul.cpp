@@ -46,7 +46,9 @@ void initMultiplication() {
 
 uint16_t mul8To16(uint8_t x, uint8_t y) {
 #ifdef IS_6502
-    return __multiplyu8Tou16(x, y);
+    uint16_t swapped = __multiplyu8Tou16(x, y);
+    uint8_t lo = swapped & 0xff, hi = swapped >> 8;
+    return (lo << 8) | hi;
 #else
     return ((uint16_t) x) * ((uint16_t) y);
 #endif
@@ -72,9 +74,9 @@ uint64_t mul32To64(uint32_t x, uint32_t y) {
 
     uint64_t z0 = mul16To32(x0, y0);
     uint64_t z1 = mul16To32(x0, y1) + (uint64_t) mul16To32(x1, y0);
-    z1 <<= 8;
+    z1 <<= 16;
     uint64_t z2 = mul16To32(x1, y1);
-    z2 <<= 16;
+    z2 <<= 32;
 
     return z0 + z1 + z2;
 }
