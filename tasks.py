@@ -15,7 +15,7 @@ root_dir = path.dirname(__file__)
 # zp_free_bytes -= 20
 # # -mlto-zp={zp_free_bytes}
 
-use_lto = False
+use_lto = True
 cxx_lto_flags = "-emit-llvm -flto" if use_lto else ""
 ldd_lto_flags = f"-flto " if use_lto else ""
 

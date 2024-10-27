@@ -12,8 +12,21 @@ using ScreenF = Fixed16<int16_t, int32_t, 12>;
 
 struct Coord {
     GeoF x, y, z;
+    constexpr Coord operator+(const Coord &r) const {
+        return {x + r.x, y + r.y, z + r.z};
+    }
+
 };
-struct ScreenCoord {
+
+struct Triangle {
+    Coord a, b, c;
+
+    inline Triangle offset(Coord o) {
+        return {a + o, b + o, c + o};
+    }
+};
+
+struct Coord2d {
     GeoF x, y;
 };
 

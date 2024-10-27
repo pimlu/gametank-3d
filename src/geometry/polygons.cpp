@@ -17,5 +17,8 @@ void fillTriangle(Coord a, Coord b, Coord c, uint8_t color) {
         cp = mat.projectScreen(c);
     graphics::fillTriangle(ap, bp, cp, color);
 }
+void fillTriangle(Triangle t, uint8_t color) {
+    fillTriangle(t.a, t.b, t.c, color);
+}
 
 }

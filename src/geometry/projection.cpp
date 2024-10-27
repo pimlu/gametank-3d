@@ -5,7 +5,7 @@
 
 namespace geometry {
 
-ScreenCoord ProjectionMatrix::project(Coord c) const {
+Coord2d ProjectionMatrix::project(Coord c) const {
     UnitF div = recipLut.lookup(-c.z);
     
     GeoF x = mulRatio(c.x, px, div);
@@ -15,7 +15,7 @@ ScreenCoord ProjectionMatrix::project(Coord c) const {
 }
 
 graphics::ScreenPos ProjectionMatrix::projectScreen(Coord c) const {
-    ScreenCoord s = project(c);
+    Coord2d s = project(c);
     int8_t x = roundGeoF(s.x), y = roundGeoF(s.y);
     return {x, y};
 }

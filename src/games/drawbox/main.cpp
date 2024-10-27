@@ -49,33 +49,17 @@ int main() {
         if (count++ == 10) {
             count = 0;
         }
-        // geometry::initMultiplication();
-
-        *(volatile uint16_t*) 0x2008 = geometry::mul8To16(255, 3);
-
-        // int8_t basisX = -50;
-        // int8_t basisY = -50;
-        // for (int8_t x = 0; x < 6; x++) {
-        //     for (int8_t y = 0; y < 6; y++) {
-        //         int8_t dx = x * 15 + count, dy = y * 15;
-        //         graphics::fillTriangle(
-        //             {(int8_t) (basisX + dx), (int8_t) (basisY + dy)},
-        //             {(int8_t) (basisX + dx + 10), (int8_t) (basisY + dy + 15)},
-        //             {(int8_t) (basisX + dx + 40), (int8_t) (basisY + dy)}, ~0b000'01'110);
-        //     }
-        // }
         
-        geometry::GeoF z = geometry::GeoF(-4.0) + geometry::GeoF(-0.5).smallIntMult(count);
+        geometry::GeoF z = geometry::GeoF(-1.5) + geometry::GeoF(-0.5).smallIntMult(count);
 
-        // *(volatile uint8_t*) 0x2009 = count + 1;
+        geometry::Triangle base = {{-0.25,-0.25,0.0}, {0.25,3.0/4,0.0}, {0.5,-0.5,0.0}};
 
-        geometry::fillTriangle({-1.0,-1.0,z}, {1.0,3.0,z}, {2.0,-2.0,z}, ~0b000'01'110);
-        geometry::fillTriangle({-1.0,-1.0,z}, {1.0,3.0,z}, {2.0,-2.0,z}, ~0b000'01'110);
-        geometry::fillTriangle({-1.0,-1.0,z}, {1.0,3.0,z}, {2.0,-2.0,z}, ~0b000'01'110);
 
-        // graphics::fillTriangle({-24, -24}, {24, 73}, {49, -49}, ~0b000'01'110);
+        geometry::fillTriangle(base.offset({1.0, 0.0, z}), ~0b000'01'110);
+        geometry::fillTriangle(base.offset({0.5, 0.2, z}), ~0b010'01'110);
+        geometry::fillTriangle(base.offset({0.0, 0.4, z}), ~0b100'01'110);
+        geometry::fillTriangle(base.offset({-0.5, 0.6, z}), ~0b110'01'110);
+        geometry::fillTriangle(base.offset({-1.0, 0.8, z}), ~0b111'01'110);
 
-        // graphics::fillTriangle({10,10}, {80,40}, {50,100}, ~0b000'01'110);
-        // graphics::fillTriangle({110,110}, {80,40}, {50,100}, ~0b000'11'100);
     }
 }
