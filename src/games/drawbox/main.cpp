@@ -37,6 +37,7 @@ int main() {
     // *(volatile uint16_t*) 0x2008 = geometry::mulRatio(foo, bar, baz).getRaw();
 
     int8_t count = 0;
+    bool dir = false;
     while (true) {
         bcr.resetIrq();
         waitForInterrupt(); // wait for next interrupt (vblank nmi)
@@ -45,21 +46,28 @@ int main() {
         
         graphics::clearScreen(0b001'00'100);
         waitForInterrupt();
-
-        if (count++ == 10) {
-            count = 0;
+        if (dir) {
+            count++;
+            if (count >= 20) {
+                dir = false;
+            }
+        } else {
+            count--;
+            if (count <= 0) {
+                dir = true;
+            }
         }
         
-        geometry::GeoF z = geometry::GeoF(-1.5) + geometry::GeoF(-0.5).smallIntMult(count);
+        geometry::GeoF x = geometry::GeoF(-1.0) + geometry::GeoF(0.1).smallIntMult(count);
 
         geometry::Triangle base = {{-0.25,-0.25,0.0}, {0.25,3.0/4,0.0}, {0.5,-0.5,0.0}};
 
 
-        geometry::fillTriangle(base.offset({1.0, 0.0, z}), ~0b000'01'110);
-        geometry::fillTriangle(base.offset({0.5, 0.2, z}), ~0b010'01'110);
-        geometry::fillTriangle(base.offset({0.0, 0.4, z}), ~0b100'01'110);
-        geometry::fillTriangle(base.offset({-0.5, 0.6, z}), ~0b110'01'110);
-        geometry::fillTriangle(base.offset({-1.0, 0.8, z}), ~0b111'01'110);
+        geometry::fillTriangle(base.offset({x, 0.8, -3.5}), ~0b111'01'110);
+        geometry::fillTriangle(base.offset({x, 0.4, -3.0}), ~0b110'01'110);
+        geometry::fillTriangle(base.offset({x, 0.0, -2.5}), ~0b100'01'110);
+        geometry::fillTriangle(base.offset({x, -0.4, -2.0}), ~0b010'01'110);
+        geometry::fillTriangle(base.offset({x, -0.8, -1.5}), ~0b000'01'110);
 
     }
 }
