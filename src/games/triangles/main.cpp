@@ -63,11 +63,11 @@ int main() {
         geometry::Triangle base = {{-0.25,-0.25,0.0}, {0.25,3.0/4,0.0}, {0.5,-0.5,0.0}};
 
 
-        geometry::fillTriangle(base.offset({x, 0.8, -3.5}), ~0b111'01'110);
-        geometry::fillTriangle(base.offset({x, 0.4, -3.0}), ~0b110'01'110);
-        geometry::fillTriangle(base.offset({x, 0.0, -2.5}), ~0b100'01'110);
-        geometry::fillTriangle(base.offset({x, -0.4, -2.0}), ~0b010'01'110);
-        geometry::fillTriangle(base.offset({x, -0.8, -1.5}), ~0b000'01'110);
+        geometry::fillTriangle(base.offset({x, 0.8, -3.5}), (uint8_t) ~0b111'01'110);
+        geometry::fillTriangle(base.offset({x, 0.4, -3.0}), (uint8_t) ~0b110'01'110);
+        geometry::fillTriangle(base.offset({x, 0.0, -2.5}), (uint8_t) ~0b100'01'110);
+        geometry::fillTriangle(base.offset({x, -0.4, -2.0}), (uint8_t) ~0b010'01'110);
+        geometry::fillTriangle(base.offset({x, -0.8, -1.5}), (uint8_t) ~0b000'01'110);
 
     }
 }
