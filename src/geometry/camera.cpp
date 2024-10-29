@@ -4,8 +4,8 @@
 
 namespace geometry {
 
-const geometry::GeoF panSpeed = 0.6;
-const geometry::GeoF pitchSpeed = -0.6;
+const geometry::GeoF panSpeed = -0.8;
+const geometry::GeoF pitchSpeed = -0.8;
 
 const geometry::GeoF travelSpeed = 0.2;
 
@@ -37,9 +37,10 @@ void Camera::updateFromGamepad(uint16_t pad) {
 
 }
 
-Coord  Camera::project(const Coord &cc) const {
+Coord Camera::project(const Coord &cc) const {
     Coord translated = cc - position;
     Coord rotated = rotation.apply(translated);
+
     Coord projected = mat.project(rotated);
     return projected;
 }

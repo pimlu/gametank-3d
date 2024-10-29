@@ -70,6 +70,29 @@ void checkProj() {
     std::cout << (int) x << ", " << (int) y << std::endl;
 }
 
+void sweepRecip() {
+
+    double worst = 0;
+    double maxDiff = 0.0;
+    for (double i = 1.0; i < 16.0; i += 1.0 / 1024) {
+        double reference = 1/i;
+        double actual = recipLut.lookup(i).toDouble();
+        double diff = std::abs(actual - reference);
+        if (diff > maxDiff) {
+            worst = i;
+            maxDiff = diff;
+        }
+
+        // std::cout << i << "," << reference << "," << actualD << std::endl;
+    }
+
+
+    double reference = 1 / worst;
+    double actual = recipLut.lookup(worst).toDouble();
+    double diff = std::abs(actual - reference);
+    std::cout << "worst=" << worst << ", reference=" << reference << ", actual=" << actual << std::endl; 
+}
+
 void sweepSin() {
     // GeoF val = 1.0;
     // GeoF x = 0.0;
@@ -100,8 +123,8 @@ void sweepSin() {
     // }
 
 
-    double reference = std::sin(worst / 32.0 * (std::numbers::pi)/2);
-    iUnitF actual = sinLut.sin(worst);
+    double reference = std::cos(worst / 32.0 * (std::numbers::pi)/2);
+    iUnitF actual = sinLut.cos(worst);
     double actualD = actual.val.toDouble() * (actual.negated ? -1 : 1);
     double diff = std::abs(actualD - reference);
     std::cout << "worst=" << worst << ", reference=" << reference << ", actual=" << actualD << std::endl; 
@@ -143,10 +166,10 @@ void checkCamera() {
 
     // Cube cube({0.0, 0.0, 0.0}, {0.5, 0.5, 0.5});
 
-    geometry::CachedCoord a = {{-0.25,-0.25,-3.5}};
-    geometry::CachedCoord b = {{0.25,3.0/4,-3.5}};
-    geometry::CachedCoord c = {{0.5,-0.5,-3.5}};
-    geometry::Triangle t = {&a, &b, &c};
+    geometry::Coord a = {-0.25,-0.25,-3.5};
+    geometry::Coord b = {0.25,3.0/4,-3.5};
+    geometry::Coord c = {0.5,-0.5,-3.5};
+    geometry::Triangle t = {a, b, c};
 
 
     camera.project(a);
@@ -169,8 +192,17 @@ int main(int argc, char** argv) {
     // checkRotation();
     // checkCamera();
 
-    sweepSin();
+    // sweepRecip();
+
+    // sweepSin();
     // checkMul();
+
+
+    geometry::Rotation rot = {geometry::Angle(-32.0)};
+    geometry::Coord delta = rot.apply({0.0, 0.0, -32.0});
+    std::cout << delta.z.toDouble() << " " << delta.x.toDouble() << std::endl;
+
+    
 
     // std::cout << "yay" << std::endl;
 }

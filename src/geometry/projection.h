@@ -10,9 +10,9 @@
 namespace geometry {
 
 // near vs far - dynamic range of the frustum
-constexpr double NEAR = 1;
+constexpr double NEAR = 0.5;
 // chosen to make FAR-NEAR a power of 2
-constexpr double FAR = 17;
+constexpr double FAR = 8.5;
 // Math.tan(60 / 2 * (1/360 * 2 * Math.PI))
 constexpr double TAN_FOV2 = 0.5773502691896257;
 constexpr double ASPECT_RATIO = graphics::FRAME_W / (double)graphics::FRAME_H;
@@ -26,7 +26,7 @@ struct ProjectionMatrix {
     // the values range from [0,4] ish
     // this contains the formulas from L to R of:
     // https://gamedev.stackexchange.com/a/120355
-    GeoF px, py, near, dyRange;
+    GeoF px, py, near, far;
 
     Coord project(Coord c) const;
 

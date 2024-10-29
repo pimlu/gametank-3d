@@ -38,6 +38,9 @@ struct iUnitF {
         // *(volatile int16_t*) 0x2008 = 0xdead;
         return negated ? -res : res; 
     }
+    iUnitF operator-() const {
+        return {val, !negated};
+    }
 };
 
 struct Coord {

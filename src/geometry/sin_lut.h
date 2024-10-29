@@ -52,6 +52,10 @@ public:
         }
     }
     constexpr iUnitF cos(GeoF x) const {
+        // prevent overflow by looping back around
+        if (x <= -32.0) {
+            return sin(GeoF(32.0 - 128.0) - x);
+        }
         return sin(GeoF(32.0) - x);
     }
 

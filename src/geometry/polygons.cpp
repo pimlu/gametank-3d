@@ -18,7 +18,7 @@ graphics::ScreenPos toScreen(Coord c) {
 }
 
 void fillTriangle(const Camera &cam, const Triangle &t, uint8_t color) {
-    if (t.a.z == 0.0 || t.b.z == 0.0 || t.c.z == 0.0) {
+    if (t.a.z <= 0.0 || t.b.z == 0.0 || t.c.z == 0.0) {
         return;
     }
 

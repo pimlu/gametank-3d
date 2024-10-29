@@ -5,27 +5,7 @@
 #include "geometry/triangle.h"
 #include "geometry/camera.h"
 
-/*
 
-z   y
-|  /
-| /
-  -----x
-
-
-    6------7
-   /       /
-  /       /|
- /       / |
-4-------5  |
-|   |   |  |
-|   2---|--3
-|  /    |  /
-| /     | /
-|/      |/
-0-------1
-
-*/
 class Cube {
     geometry::Coord lo, hi;
 

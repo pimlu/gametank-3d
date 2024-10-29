@@ -82,7 +82,7 @@ uint64_t mul32To64(uint32_t x, uint32_t y) {
 }
 
 // TODO overflow probably handled wrong
-int32_t imul16To32(int16_t x, int16_t y) {
+int32_t  imul16To32(int16_t x, int16_t y) {
     bool neg = false;
     uint16_t ux, uy;
     if (x < 0) {

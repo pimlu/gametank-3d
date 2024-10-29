@@ -3,7 +3,27 @@
 #include "geometry/cached_coord.h"
 #include "geometry/polygons.h"
 #include "geometry/fixed_etc.h"
+/*
 
+z   y
+|  /
+| /
+  -----x
+
+
+    6------7
+   /       /
+  /       /|
+ /       / |
+4-------5  |
+|   |   |  |
+|   2---|--3
+|  /    |  /
+| /     | /
+|/      |/
+0-------1
+
+*/
 using namespace geometry;
 
 
@@ -30,7 +50,7 @@ void Cube::paint(Camera &cam) {
 
     const uint8_t c = (uint8_t) ~0b000'01'110;
 
-    if (pos.z < lo.z) {
+    if ((pos.z < lo.z)) {
         fillTriangle(cam, TRIANGLE(0, 1, 2), c);
         fillTriangle(cam, TRIANGLE(3, 1, 2), c);
     } else if (pos.z > hi.z) {
@@ -43,7 +63,7 @@ void Cube::paint(Camera &cam) {
         fillTriangle(cam, TRIANGLE(6, 2, 4), ~c);
     } else if (pos.x > hi.x) {
         fillTriangle(cam, TRIANGLE(1, 3, 5), c);
-        fillTriangle(cam, TRIANGLE(7, 3, 5), ~c);
+        fillTriangle(cam, TRIANGLE(7, 3, 5), c);
     }
 
     if (pos.y < lo.y) {
