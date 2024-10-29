@@ -7,7 +7,7 @@ namespace geometry {
 struct Rotation {
     Angle heading, pitch;
     Coord apply(Coord input) const;
-    Coord Rotation::applyNeg(Coord c) const;
+    Coord applyNeg(Coord c) const;
 
 };
 

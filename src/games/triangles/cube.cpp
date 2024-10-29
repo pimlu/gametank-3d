@@ -40,9 +40,9 @@ void Cube::paint(Camera &cam) {
 
     if (pos.x < lo.x) {
         fillTriangle(cam, TRIANGLE(0, 2, 4), c);
-        fillTriangle(cam, TRIANGLE(6, 2, 4), c);
+        fillTriangle(cam, TRIANGLE(6, 2, 4), ~c);
     } else if (pos.x > hi.x) {
-        fillTriangle(cam, TRIANGLE(1, 3, 5), ~c);
+        fillTriangle(cam, TRIANGLE(1, 3, 5), c);
         fillTriangle(cam, TRIANGLE(7, 3, 5), ~c);
     }
 
