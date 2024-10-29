@@ -5,26 +5,16 @@
 
 namespace geometry {
 
-Coord2d ProjectionMatrix::project(Coord c) const {
-    UnitF div = recipLut.lookup(-c.z);
+Coord ProjectionMatrix::project(Coord c) const {
+    GeoF z = -c.z;
+    UnitF div = recipLut.lookup(z);
     
     GeoF x = mulRatio(c.x, px, div);
     GeoF y = mulRatio(c.y, py, div);
 
-    return {x, y};
-}
-
-graphics::ScreenPos ProjectionMatrix::projectScreen(Coord c) const {
-    Coord2d s = project(c);
-    int8_t x = roundGeoF(s.x), y = roundGeoF(s.y);
-    return {x, y};
-}
-
-GeoF ProjectionMatrix::projectZ(Coord c) const {
-    GeoF z = -c.z;
     z -= near;
-    z *= dyRange;
-    return z;
+
+    return {x, y, z};
 }
 
 ProjectionMatrix ProjectionMatrix::defaultMatrix() {

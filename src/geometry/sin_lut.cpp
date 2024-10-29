@@ -1,7 +1,8 @@
-#include "recip_lut.h"
+#include "sin_lut.h"
 
 namespace geometry {
 
 __attribute__((section(".rodata.fixed")))
-const RecipLut recipLut;
+const SinLut sinLut;
+
 }

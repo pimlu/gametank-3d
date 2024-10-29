@@ -24,9 +24,10 @@ struct RecipLut {
 
             cur += STEP;
         }
+        lut.setLast(1 / cur);
     }
     constexpr UnitF lookup(GeoF x) const {
-        return lut.lookupOrConst(x, 0.0);
+        return lut.lookupOrConst(x, 0.0, 0.0);
     }
 };
 

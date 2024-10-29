@@ -21,3 +21,14 @@ void Scr::setDefaultVideoFlags() {
 void Scr::setEnableVblankNmi(bool enabled) {
     videoCfg.setBit(2, enabled);
 }
+
+uint16_t Scr::readGamepad1() {
+    // according to https://gametank.zone/manual/, reset the state via reading 2 first
+    scr.gamepad2.read();
+    
+    uint8_t lo = scr.gamepad1.read();
+    uint8_t hi = scr.gamepad1.read();
+    uint16_t combo = (hi << 8) | lo;
+
+    return ~combo;
+}

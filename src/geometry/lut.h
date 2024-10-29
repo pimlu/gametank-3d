@@ -1,7 +1,8 @@
 #pragma once
 
 #include <cstdint>
-// #include <iostream>
+
+#include "fixed_etc.h"
 
 namespace geometry {
 
@@ -19,7 +20,7 @@ struct alignas(256) Lut {
 
     static_assert (STEP_RAW == (1 << STEP_BITS));
 
-    constexpr Lut() : lsb(), msb() {
+    constexpr Lut() : lsb(), msb(), last(0.0) {
         // std::cout << "lut" << std::endl;
         // std::cout << (int) STEP_RAW << std::endl;
         // std::cout << (int) STEP_BITS << std::endl;
@@ -30,11 +31,16 @@ struct alignas(256) Lut {
     }
     uint8_t lsb[256];
     uint8_t msb[256];
+    Out last;
 
     constexpr void setEntry(uint8_t idx, Out val) {
         lsb[idx] = val.lsb();
         msb[idx] = val.msb();
     }
+    constexpr void setLast(Out val) {
+        last = val;
+    }
+    
 
 
     Out getEntry(uint8_t idx) const {
@@ -45,15 +51,20 @@ struct alignas(256) Lut {
         // std::cout << "lerp" << std::endl;
         // std::cout << (int) frac << std::endl;
         constexpr uint8_t REM_BITS = 8 - STEP_BITS;
-        uint8_t invFrac = ((int16_t) 256) - frac;
-        a.scaleByUint8(invFrac << REM_BITS);
-        b.scaleByUint8(frac << REM_BITS);
-        return a + b;
+        uint8_t invFrac = (1 << STEP_BITS) - frac;
+
+        // this only exists for UnitF right now...
+        Out aPart = scaleByUint8(a, invFrac << REM_BITS);
+        Out bPart = scaleByUint8(b, frac << REM_BITS);
+        return aPart + bPart;
     }
 
-    Out lookupOrConst(Inp x, Out missVal) const {
-        if (x < START) return missVal;
-        if (END != START && x >= END) return missVal;
+    Out lookupOrConst(Inp x, Out loMiss, Out hiMiss) const {
+        if (x < START) return loMiss;
+        if (END != START) {
+            if (x == END) return last;
+            else if (x > END) return hiMiss;
+        }
         Inp shifted = x - START;
         int16_t shiftedBits = shifted.getRaw();
         // // std::cout << "lookup " << shifted.toDouble() << std::endl;
@@ -65,7 +76,12 @@ struct alignas(256) Lut {
         if (!frac) {
             return getEntry(idx);
         }
-        Out res = lerp(getEntry(idx), getEntry(idx+1), frac);
+        Out next = last;
+        if (idx != 255) {
+            [[likely]]
+            next = getEntry(idx+1);
+        }
+        Out res = lerp(getEntry(idx), next, frac);
 
         return res;
     }

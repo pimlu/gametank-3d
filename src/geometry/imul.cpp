@@ -25,7 +25,7 @@ struct alignas(256) __attribute__ ((packed))  IMul8Consts {
 };
 
 
-__attribute__((section(".rodata")))
+__attribute__((section(".rodata.fixed")))
 const volatile IMul8Consts __imulConsts;
 
 
@@ -84,29 +84,39 @@ uint64_t mul32To64(uint32_t x, uint32_t y) {
 // TODO overflow probably handled wrong
 int32_t imul16To32(int16_t x, int16_t y) {
     bool neg = false;
+    uint16_t ux, uy;
     if (x < 0) {
         neg ^= true;
-        x = -x;
+        ux = -(uint16_t)x;
+    } else {
+        ux = x;
     }
     if (y < 0) {
         neg ^= true;
-        y = -y;
+        uy = -(uint16_t)y;
+    } else {
+        uy = y;
     }
-    int32_t res = (int32_t) mul16To32((uint16_t) x, (uint16_t) y);
+    int32_t res = (int32_t) mul16To32(ux, uy);
     return neg ? -res : res;
 }
 
 int64_t imul32To64(int32_t x, int32_t y) {
     bool neg = false;
+    uint32_t ux, uy;
     if (x < 0) {
         neg ^= true;
-        x = -x;
+        ux = -(uint32_t)x;
+    } else {
+        ux = x;
     }
     if (y < 0) {
         neg ^= true;
-        y = -y;
+        uy = -(uint32_t)y;
+    } else {
+        uy = y;
     }
-    int64_t res = (int64_t) mul32To64((uint32_t) x, (uint32_t) y);
+    int64_t res = (int64_t) mul32To64(ux, uy);
     return neg ? -res : res;
 }
 }

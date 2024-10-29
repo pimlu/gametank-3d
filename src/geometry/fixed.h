@@ -20,16 +20,9 @@ class Fixed16 {
         return (D) res;
     }
 
-    template<typename Dp, typename D2p, int8_t Mp>
-    constexpr void shiftMulEqImpl(const Fixed16<Dp, D2p, Mp> &r) {
-        // static_assert(Mp % 8 == 0);
-        int32_t res = geometry::imul16To32(data, r.data);
-        data = (int16_t) (res >> Mp);
-    }
-
 public:
     D data;
-    Fixed16() = delete;
+    constexpr Fixed16() : data(0) {}
     constexpr Fixed16(const Fixed16& o) : data(o.data) {}
     constexpr Fixed16(double value) : data(round(value * (((uint32_t)1) << M))) {}
     constexpr static Fixed16 fromRaw(D data) {
@@ -117,33 +110,6 @@ public:
         int32_t res = geometry::imul16To32(data, r.data);
         data = (int16_t) (res >> M);
         return *this;
-    }
-
-    template<uint8_t Mp>
-    constexpr void shiftMulEq(const Fixed16<uint16_t, uint32_t, Mp> &r) {
-        shiftMulEqImpl<uint16_t, uint32_t, Mp>(r);
-    }
-    template<uint8_t Mp>
-    constexpr void shiftMulEq(const Fixed16<int16_t, int32_t, Mp> &r) {
-        shiftMulEqImpl<int16_t, int32_t, Mp>(r);
-    }
-    template<uint8_t Mp>
-    constexpr Fixed16 shiftMul(const Fixed16<uint16_t, uint32_t, Mp> &r) {
-        Fixed16 res = *this;
-        res.shiftMulEq(r);
-        return res;
-    }
-    template<uint8_t Mp>
-    constexpr Fixed16 shiftMul(const Fixed16<int16_t, int32_t, Mp> &r) {
-        Fixed16 res = *this;
-        res.shiftMulEq(r);
-        return res;
-    }
-
-
-    constexpr void scaleByUint8(uint8_t scale) {
-        int32_t res = geometry::imul16To32(data, scale);
-        data = (int16_t) (res >> 8);
     }
 };
 

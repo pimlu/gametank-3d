@@ -28,10 +28,7 @@ struct ProjectionMatrix {
     // https://gamedev.stackexchange.com/a/120355
     GeoF px, py, near, dyRange;
 
-    Coord2d project(Coord c) const;
-    graphics::ScreenPos projectScreen(Coord c) const;
-    GeoF projectZ(Coord c) const;
-
+    Coord project(Coord c) const;
 
     static ProjectionMatrix defaultMatrix(); 
 

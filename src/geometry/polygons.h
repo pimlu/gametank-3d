@@ -2,10 +2,12 @@
 
 #include <cstdint>
 #include "types.h"
+#include "triangle.h"
+#include "camera.h"
 
 namespace geometry {
 
-void fillTriangle(Coord a, Coord b, Coord c, uint8_t color);
-void fillTriangle(Triangle t, uint8_t color);
+// void fillTriangle(Coord a, Coord b, Coord c, uint8_t color);
+void fillTriangle(const Camera &cam, const Triangle &t, uint8_t color);
 
 }

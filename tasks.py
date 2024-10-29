@@ -86,7 +86,7 @@ def build_cpp_dir(c, dir):
 
             c.run(f"mkdir -p {path.dirname(dst)}")
             # magic -mcpu came from llvm-mos pull #192
-            gt_run(c, f"clang --std=c++20 -O3 {cxx_lto_flags} -fnonreentrant -fno-stack-protector -c -Xclang -triple=mos -mcpu=mosw65c02 -DIS_6502 -isystem /usr/local/mos-platform/common/include -Isrc '{src}' -o '{dst}'")
+            gt_run(c, f"clang --std=c++20 -O3 {cxx_lto_flags} -Wall -fnonreentrant -fno-stack-protector -c -Xclang -triple=mos -mcpu=mosw65c02 -DIS_6502 -isystem /usr/local/mos-platform/common/include -Isrc '{src}' -o '{dst}'")
 
     return objs
 
@@ -124,7 +124,7 @@ def build_test(c):
     with c.cd(root_dir):
         c.run("mkdir -p build/tests")
         c.run("clang++ --std=c++20 -lstdc++ -fsanitize=undefined -Isrc -g src/tests/bresenham_test.cpp -o build/tests/bresenham_test")
-        c.run("clang++ --std=c++20 -lstdc++ -fsanitize=undefined -Isrc -g src/geometry/fixed_etc.cpp src/geometry/imul.cpp src/geometry/projection.cpp src/geometry/recip_lut.cpp src/tests/recip_lut_test.cpp -o build/tests/recip_lut_test")
+        c.run("clang++ --std=c++20 -lstdc++ -fsanitize=undefined -Isrc -g src/geometry/fixed_etc.cpp src/geometry/imul.cpp src/geometry/projection.cpp src/geometry/recip_lut.cpp src/geometry/camera.cpp src/geometry/rotation.cpp src/geometry/sin_lut.cpp src/tests/recip_lut_test.cpp -o build/tests/recip_lut_test")
 
 
 @task

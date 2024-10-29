@@ -18,7 +18,7 @@ SECTIONS
     } > VECTOR_TABLE
 
     .rodata : {
-        *(.rodata*)
+        *(.rodata)
     } > BANKED_FLASH
 
     .rodata_fixed : {

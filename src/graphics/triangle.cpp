@@ -6,7 +6,9 @@
 
 namespace graphics {
 
-void fillTriangle(ScreenPos a, ScreenPos b, ScreenPos c, uint8_t color) {
+
+__attribute__((section(".text.fixed")))
+void __attribute__((noinline)) fillTriangle(ScreenPos a, ScreenPos b, ScreenPos c, uint8_t color) {
     bool shouldWait = false;
 
     bcr.setupRowFill(color);
