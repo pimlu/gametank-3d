@@ -35,6 +35,9 @@ int main() {
 
     geometry::Camera camera;
 
+    camera.rotation.heading.setTheta(5.0);
+    camera.rotation.pitch.setTheta(-12.0);
+
     camera.position = {3.0, 5.0, 5.0};
     // camera.rotation.heading
 

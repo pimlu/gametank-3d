@@ -37,7 +37,7 @@ private:
     }
 public:
     // calculates sin(x/32 * Math.PI/2)
-    // a half range of GeoF becomes one sin loop
+    // a half range AKA [-64,64) of GeoF becomes one sin loop
     constexpr iUnitF __attribute__((noinline)) sin(GeoF x) const {
         if (x >= 0.0) {
             return {

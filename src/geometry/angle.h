@@ -29,7 +29,10 @@ public:
         cosVal = sinLut.cos(val);
     }
     constexpr void adjust(GeoF val) {
-        setTheta(getTheta() + val);
+        GeoF next = getTheta() + val;
+        if (next > 64.0) next -= 64.0;
+        if (next < -64.0) next += 64.0;
+        setTheta(next);
     }
 
     constexpr iUnitF sin() const {

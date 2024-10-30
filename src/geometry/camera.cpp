@@ -4,8 +4,8 @@
 
 namespace geometry {
 
-const geometry::GeoF panSpeed = -0.8;
-const geometry::GeoF pitchSpeed = -0.8;
+const geometry::GeoF panSpeed = -1.2;
+const geometry::GeoF pitchSpeed = -1.2;
 
 const geometry::GeoF travelSpeed = 0.2;
 
