@@ -1,6 +1,6 @@
 #include "fixed_etc.h"
 
-#include "imul.h"
+#include "system/imul.h"
 
 // #include <iostream>
 
@@ -13,8 +13,8 @@ GeoF mulRatio(GeoF x, GeoF num, UnitF den) {
     int16_t numD = num.getRaw();
     uint16_t denD = den.getRaw();
 
-    int32_t firstProd = geometry::imul16To32(xD, numD);
-    int64_t prod = geometry::imul32To64(firstProd, denD);
+    int64_t firstProd = imul32To64(xD, numD);
+    int64_t prod = imul32To64(firstProd, denD);
     int16_t res = prod >> (8 + 16);
 
     return GeoF::fromRaw(res);

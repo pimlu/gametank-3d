@@ -26,7 +26,7 @@ ProjectionMatrix ProjectionMatrix::defaultMatrix() {
         far = FAR;
         // pz = -(FAR + NEAR) / (FAR - NEAR),
         // pw = - (2 * FAR * NEAR) / (FAR - NEAR);
-    return {px, py, near, FAR};
+    return {px, py, near, far};
 }
 
 }

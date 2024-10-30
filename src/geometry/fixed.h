@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <limits>
 
-#include "imul.h"
+#include "system/imul.h"
 
 namespace geometry {
     
@@ -107,7 +107,7 @@ public:
 
     constexpr Fixed16& operator*=(const Fixed16 &r) {
         // static_assert(M % 8 == 0);
-        int32_t res = geometry::imul16To32(data, r.data);
+        int32_t res = imul16To32(data, r.data);
         data = (int16_t) (res >> M);
         return *this;
     }

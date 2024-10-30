@@ -1,5 +1,6 @@
 #pragma once
-#include "cached_coord.h"
+
+#include "types.h"
 
 
 namespace geometry {

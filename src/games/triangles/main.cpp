@@ -7,14 +7,14 @@
 
 #include "graphics/triangle.h"
 #include "geometry/polygons.h"
-#include "geometry/imul.h"
+#include "system/imul.h"
 
 #include "geometry/sin_lut.h"
 
 #include "geometry/triangle.h"
 #include "geometry/camera.h"
 
-#include "cube.h"
+#include "geometry/cube.h"
 
 
 int main() {
@@ -35,18 +35,19 @@ int main() {
 
     geometry::Camera camera;
 
-    camera.position = {0.0, 0.0, 2.5};
+    camera.position = {3.0, 5.0, 5.0};
+    // camera.rotation.heading
 
-    
-    Cube cube({0.0, 0.0, 0.0}, {0.5, 0.5, 0.5});
+    uint8_t colors[6] = {
+        (uint8_t) ~0b000'01'101,
+        (uint8_t) ~0b000'01'101,
+        (uint8_t) ~0b000'01'010,
+        (uint8_t) ~0b000'01'110,
+        (uint8_t) ~0b000'01'101,
+        (uint8_t) ~0b000'01'100
+    };
 
-
-    Cube cube2({0.5, 0.0, 0.5}, {1.0, 0.5, 1.5});
-
-    // geometry::CachedCoord a = {{-0.25,-0.25,-3.5}};
-    // geometry::CachedCoord b = {{0.25,3.0/4,-3.5}};
-    // geometry::CachedCoord c = {{0.5,-0.5,-3.5}};
-    // geometry::Triangle t = {&a, &b, &c};
+    geometry::Cube cube({0.0, 0.0, 0.0}, {2.0, 2.0, 2.0}, colors);
 
 
     while (true) {
@@ -94,23 +95,16 @@ int main() {
         // geometry::fillTriangle(base.offset({x, -0.4, -2.0}), (uint8_t) ~0b010'01'110);
         // geometry::fillTriangle(base.offset({x, -0.8, -1.5}), (uint8_t) ~0b000'01'110);
 
-        // auto dist1 = cube.calcDistance(camera);
-        // auto dist2 = cube2.calcDistance(camera);
-        // if (dist1 < dist2) {
-        //     cube2.paint(camera);
-        //     cube.paint(camera);
-        // } else {
-        //     cube.paint(camera);
-        //     cube2.paint(camera);
-        // }
+        cube.calcDistance(camera);
+        cube.paint(camera);
         // geometry::fillTriangle(camera, t, (uint8_t) ~0b000'01'110);
         // fillAt({0, 0}, black);
 
         // fillAt({(int8_t)(64 + roundGeoF(camera.position.x * 2.0)), (int8_t)(64 + roundGeoF(camera.position.z * 2.0))}, black);
 
-        auto dist1 = cube2.calcDistance(camera);
-        cube2.paint(camera);
-        bcr.drawBox(10, 10, roundGeoF(dist1 * 10.0), 1, black);
+        // auto dist1 = cube2.calcDistance(camera);
+        // cube2.paint(camera);
+        // bcr.drawBox(10, 10, roundGeoF(dist1 * 10.0), 1, black);
 
 
 

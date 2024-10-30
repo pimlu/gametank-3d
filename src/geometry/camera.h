@@ -2,7 +2,6 @@
 #include "types.h"
 #include "rotation.h"
 #include "projection.h"
-#include "cached_coord.h"
 
 namespace geometry {
 

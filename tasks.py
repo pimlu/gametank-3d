@@ -123,8 +123,8 @@ def build(c):
 def build_test(c):
     with c.cd(root_dir):
         c.run("mkdir -p build/tests")
-        c.run("clang++ --std=c++20 -lstdc++ -fsanitize=undefined -Isrc -g src/tests/bresenham_test.cpp -o build/tests/bresenham_test")
-        c.run("clang++ --std=c++20 -lstdc++ -fsanitize=undefined -Isrc -g src/geometry/fixed_etc.cpp src/geometry/imul.cpp src/geometry/projection.cpp src/geometry/recip_lut.cpp src/geometry/camera.cpp src/geometry/rotation.cpp src/geometry/sin_lut.cpp src/tests/recip_lut_test.cpp -o build/tests/recip_lut_test")
+        c.run("clang++ --std=c++20 -O0 -lstdc++ -fsanitize=undefined -Isrc -g src/system/imul.cpp src/tests/bresenham_test.cpp -o build/tests/bresenham_test")
+        c.run("clang++ --std=c++20 -O0 -lstdc++ -fsanitize=undefined -Isrc -g src/geometry/fixed_etc.cpp src/system/imul.cpp src/geometry/projection.cpp src/geometry/recip_lut.cpp src/geometry/cube.cpp src/geometry/camera.cpp src/geometry/rotation.cpp src/geometry/sin_lut.cpp src/tests/recip_lut_test.cpp -o build/tests/recip_lut_test")
 
 
 @task

@@ -4,7 +4,8 @@
 #include <new>
 
 #include "types.h"
-#include "i8helpers.h"
+#include "system/i8helpers.h"
+#include "system/imul.h"
 
 namespace graphics {
 
@@ -165,13 +166,24 @@ void fillTriangleGeneric(ScreenPos a, ScreenPos b, ScreenPos c, Fill &&fill) {
     if (b.y > c.y) swapPos(b, c);
     if (a.y > b.y) swapPos(a, b);
 
-    bool bIsLeft = b.x <= c.x;
+    bool bIsLeft;
+    if (b.y != a.y) {
+        // annoying slope comparison to check if the left side is AB or AC
+        // this is the thing where a/b < c/d turns into a*d < c*b
+        bIsLeft = imul8To16(b.x - a.x, c.y - a.y) < imul8To16(c.x - a.x, b.y - a.y);
+    } else {
+        // annoying edge case: if there is no flat top triangle,
+        // left side vs right side is determined by whether B is to the left
+        // or right of A.
+        bIsLeft = b.x < a.x;
+    }
 
     ScreenPos &left = bIsLeft ? b : c;
     ScreenPos &right = bIsLeft ? c : b;
 
+    // if a.y == b.y, need to skip [a, b]
 
-    // first, fill the "flat bottom triangle"
+    // first, fill the "flat top triangle"
     Bres leftBres(a, left);
     Bres rightBres(a, right);
 
@@ -194,7 +206,7 @@ void fillTriangleGeneric(ScreenPos a, ScreenPos b, ScreenPos c, Fill &&fill) {
         new (&rightBres) Bres(b, c);
     }
 
-    // now, fill the "flat top triangle"
+    // now, fill the "flat bottom triangle"
     for (; y < c.y; y++) {
         int8_t xLeft = leftBres.bresenhamIter();
         int8_t xRight = rightBres.bresenhamIter();

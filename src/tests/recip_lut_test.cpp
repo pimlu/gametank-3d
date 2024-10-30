@@ -10,6 +10,7 @@
 #include "geometry/rotation.h"
 #include "geometry/camera.h"
 #include "geometry/triangle.h"
+#include "geometry/cube.h"
 
 using namespace geometry;
 
@@ -102,7 +103,7 @@ void sweepSin() {
     // std::cout << (int) sr << " " << (int) vr << std::endl;
 
     // std::cout << (int) (sr*(int32_t)vr) << std::endl;
-    // std::cout << (int) geometry::imul16To32(sr, vr) << std::endl;
+    // std::cout << (int) imul16To32(sr, vr) << std::endl;
     // std::cout << s.val.toDouble() << std::endl;
     // std::cout << ( s * val).toDouble() << std::endl;
 
@@ -139,15 +140,15 @@ int checkMul() {
     // for (int i=0; i<100'000'000; i++) {
     //     int32_t x = uniform_dist(e1);
     //     int16_t y = uniform_dist(e1);
-    //     // std::cout << (int)x << " " << (int) y << " " << geometry::imul32To64(x, y) << std::endl;
-    //     if (x*(int64_t)y != geometry::imul32To64(x, y)) {
-    //         std::cout << (int)x << " " << (int) y << " " << geometry::imul32To64(x, y) << std::endl;
+    //     // std::cout << (int)x << " " << (int) y << " " << imul32To64(x, y) << std::endl;
+    //     if (x*(int64_t)y != imul32To64(x, y)) {
+    //         std::cout << (int)x << " " << (int) y << " " << imul32To64(x, y) << std::endl;
     //         return 1;
     //     }
     // }
         int32_t x = 32999;
         int32_t y = 128;
-        std::cout << (int)x << " " << (int) y << " " << geometry::imul16To32(x, y) << " " << (x * y) << std::endl;
+        std::cout << (int)x << " " << (int) y << " " << imul16To32(x, y) << " " << (x * y) << std::endl;
     return 0;
 }
 
@@ -180,6 +181,16 @@ void checkCamera() {
 
 }
 
+void output(Coord c) {
+    std::cout << "{" << c.x.toDouble() << ", " << c.y.toDouble() << ", " << c.z.toDouble() << "}" << std::endl;
+}
+
+
+namespace geometry {
+
+    void fillTriangle(const Camera &cam, const Triangle &t, uint8_t color) {}
+}
+
 // not really a test, just random junk
 int main(int argc, char** argv) {
     // checkLookup();
@@ -198,10 +209,38 @@ int main(int argc, char** argv) {
     // checkMul();
 
 
-    geometry::Rotation rot = {geometry::Angle(-32.0)};
-    geometry::Coord delta = rot.apply({0.0, 0.0, -32.0});
-    std::cout << delta.z.toDouble() << " " << delta.x.toDouble() << std::endl;
+    // geometry::Rotation rot = {geometry::Angle(-32.0)};
+    // geometry::Coord delta = rot.apply({0.0, 0.0, -32.0});
+    // std::cout << delta.z.toDouble() << " " << delta.x.toDouble() << std::endl;
 
+
+    geometry::Camera camera;
+
+    camera.position = {0.0, -0.5, 5.0};
+
+    // auto res = camera.project({2.0, 0.0, 3.0});
+    geometry::Cube cube2({1.0, 0.0, 1.0}, {2.0, 1.0, 3.0});
+
+    cube2.calcDistance(camera);
+
+    for (int i = 0; i < 8; i++) {
+        std::cout << i << " ";
+        output(cube2.debugGetVert(i));
+    }
+    std::cout<< std::endl;
+
+    // camera.rotation.heading.adjust(-2.0);
+
+    // cube2.calcDistance(camera);
+
+    // for (int i = 0; i < 8; i++) {
+    //     std::cout << i << " ";
+    //     output(cube2.debugGetVert(i));
+    // }
+
+    //    0, 1, 4
+
+    // std::cout << res.x.toDouble() << " " << res.y.toDouble() << " " << res.z.toDouble() << std::endl;
     
 
     // std::cout << "yay" << std::endl;

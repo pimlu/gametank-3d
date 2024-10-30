@@ -10,9 +10,9 @@
 namespace geometry {
 
 // near vs far - dynamic range of the frustum
-constexpr double NEAR = 0.5;
+constexpr double NEAR = 1;
 // chosen to make FAR-NEAR a power of 2
-constexpr double FAR = 8.5;
+constexpr double FAR = 17;
 // Math.tan(60 / 2 * (1/360 * 2 * Math.PI))
 constexpr double TAN_FOV2 = 0.5773502691896257;
 constexpr double ASPECT_RATIO = graphics::FRAME_W / (double)graphics::FRAME_H;

@@ -36,7 +36,6 @@ extern AsmFn multiply_16bit_signed, init_multiplication;
 #endif
 
 
-namespace geometry {
 
 void initMultiplication() {
 #ifdef IS_6502
@@ -82,7 +81,27 @@ uint64_t mul32To64(uint32_t x, uint32_t y) {
 }
 
 // TODO overflow probably handled wrong
-int32_t  imul16To32(int16_t x, int16_t y) {
+
+int16_t imul8To16(int8_t x, int8_t y) {
+    bool neg = false;
+    uint8_t ux, uy;
+    if (x < 0) {
+        neg ^= true;
+        ux = -(uint8_t)x;
+    } else {
+        ux = x;
+    }
+    if (y < 0) {
+        neg ^= true;
+        uy = -(uint8_t)y;
+    } else {
+        uy = y;
+    }
+    int16_t res = (int16_t) mul8To16(ux, uy);
+    return neg ? -res : res;
+}
+
+int32_t imul16To32(int16_t x, int16_t y) {
     bool neg = false;
     uint16_t ux, uy;
     if (x < 0) {
@@ -118,5 +137,4 @@ int64_t imul32To64(int32_t x, int32_t y) {
     }
     int64_t res = (int64_t) mul32To64(ux, uy);
     return neg ? -res : res;
-}
 }

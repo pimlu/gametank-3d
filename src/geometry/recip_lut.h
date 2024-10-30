@@ -8,8 +8,8 @@ namespace geometry {
 
 
 struct RecipLut {
-    static constexpr double START = 0.5;
-    static constexpr double STEP = 8.0 / 256;
+    static constexpr double START = 1.0;
+    static constexpr double STEP = 16.0 / 256;
 
     Lut<GeoF, GeoF(START), GeoF(STEP), UnitF> lut; 
 
