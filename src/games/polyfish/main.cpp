@@ -40,7 +40,7 @@ int main() {
     camera.rotation.heading.setTheta(5.0);
     camera.rotation.pitch.setTheta(-12.0);
 
-    camera.position = {3.0, 5.0, 5.0};
+    camera.position = {3.0, 4.0, 5.0};
     // camera.rotation.heading
 
     uint8_t cubeColors[6] = {
@@ -54,9 +54,9 @@ int main() {
 
     geometry::Cube cube({0.0, 0.0, 0.0}, {2.0, 2.0, 2.0}, cubeColors);
     uint8_t fishColors[3] = {
-        (uint8_t) ~0b000'01'101,
-        (uint8_t) ~0b000'01'101,
-        (uint8_t) black,
+        (uint8_t) ~0b011'11'100,
+        (uint8_t) ~0b011'11'101,
+        (uint8_t) ~0b011'10'010,
     };
     Fish fish1({0.0, 1.0, 0.0}, geometry::Angle(), fishColors);
 
