@@ -45,4 +45,10 @@ Coord Camera::project(const Coord &cc) const {
     return projected;
 }
 
+
+GeoF Camera::getHorizonPos(Rotation angle) const {
+    Coord p = mat.project(angle.apply({0.0, 0.0, 2.0}));
+    return p.y;
+}
+
 }

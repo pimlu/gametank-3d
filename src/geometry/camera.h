@@ -16,6 +16,7 @@ struct Camera {
     void tickFrame();
     void updateFromGamepad(uint16_t gamepad);
     Coord project(const Coord &cc) const;
+    GeoF getHorizonPos(Rotation angle) const;
 };
 
 }
