@@ -4,5 +4,5 @@
 .global _VECTOR_TABLE
 _VECTOR_TABLE:
     .word vblankNmi
-    .word __boot
+    .word _start
     .word blitIsr

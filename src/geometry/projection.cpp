@@ -5,15 +5,20 @@
 
 namespace geometry {
 
+Coord oob = {0.0, 0.0, 0.0};
+
 Coord ProjectionMatrix::project(Coord c) const {
     GeoF z = -c.z;
     if (z < near || z > far) {
-        return {0.0, 0.0, 0.0};
+        return oob;
     }
     UnitF div = recipLut.lookup(z);
     
-    GeoF x = mulRatio(c.x, px, div);
-    GeoF y = mulRatio(c.y, py, div);
+    bool overflow = false;
+    GeoF x = mulRatio(c.x, px, div, overflow);
+    if (overflow) return oob;
+    GeoF y = mulRatio(c.y, py, div, overflow);
+    if (overflow) return oob;
 
     return {x, y, z};
 }

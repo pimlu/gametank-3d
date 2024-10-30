@@ -30,8 +30,8 @@ public:
     }
     constexpr void adjust(GeoF val) {
         GeoF next = getTheta() + val;
-        if (next > 64.0) next -= 64.0;
-        if (next < -64.0) next += 64.0;
+        if (next > 64.0) next -= 128.0;
+        if (next < -64.0) next += 128.0;
         setTheta(next);
     }
 
@@ -41,6 +41,17 @@ public:
 
     constexpr iUnitF cos() const {
         return cosVal;
+    }
+
+    constexpr Coord2d apply(Coord2d p) const {
+        GeoF x = cos() * p.x - sin() * p.y;
+        GeoF y = sin() * p.x + cos() * p.y;
+        return {x, y};
+    }
+    constexpr Coord2d applyNeg(Coord2d p) const {
+        GeoF x = cos() * p.x + sin() * p.y;
+        GeoF y = -sin() * p.x + cos() * p.y;
+        return {x, y};
     }
   
 };

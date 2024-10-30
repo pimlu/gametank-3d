@@ -10,7 +10,7 @@ extern "C" {
     extern uint8_t _bss_start, _bss_end;
 
     __attribute__((section(".text.fixed")))
-    void __boot() {
+    void _start() {
         // set the banking register first since the "mirror" registers
         // are affected by the memory bank
         scr.bankingReg.write(0);

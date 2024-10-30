@@ -48,7 +48,8 @@ void checkRatio() {
 
     GeoF x = 2.5, num = 3.0, den = 1.5;
 
-    GeoF res = mulRatio(x, num, recipLut.lookup(den));
+    bool overflow = false;
+    GeoF res = mulRatio(x, num, recipLut.lookup(den), overflow);
     std::cout << res.toDouble() << std::endl;
 
 }
@@ -214,20 +215,20 @@ int main(int argc, char** argv) {
     // std::cout << delta.z.toDouble() << " " << delta.x.toDouble() << std::endl;
 
 
-    geometry::Camera camera;
+    // geometry::Camera camera;
 
-    camera.position = {0.0, -0.5, 5.0};
+    // camera.position = {0.0, -0.5, 5.0};
 
-    // auto res = camera.project({2.0, 0.0, 3.0});
-    geometry::Cube cube2({1.0, 0.0, 1.0}, {2.0, 1.0, 3.0});
+    // // auto res = camera.project({2.0, 0.0, 3.0});
+    // geometry::Cube cube2({1.0, 0.0, 1.0}, {2.0, 1.0, 3.0});
 
-    cube2.calcDistance(camera);
+    // cube2.calcDistance(camera);
 
-    for (int i = 0; i < 8; i++) {
-        std::cout << i << " ";
-        output(cube2.debugGetVert(i));
-    }
-    std::cout<< std::endl;
+    // for (int i = 0; i < 8; i++) {
+    //     std::cout << i << " ";
+    //     output(cube2.debugGetVert(i));
+    // }
+    // std::cout<< std::endl;
 
     // camera.rotation.heading.adjust(-2.0);
 
@@ -242,6 +243,9 @@ int main(int argc, char** argv) {
 
     // std::cout << res.x.toDouble() << " " << res.y.toDouble() << " " << res.z.toDouble() << std::endl;
     
+
+    bool overflow = false;
+    std::cout << mulRatio(64.0, 64.0, UnitF::fromRaw(0xffff), overflow).toDouble() << std::endl;;
 
     // std::cout << "yay" << std::endl;
 }

@@ -8,7 +8,7 @@
 
 namespace geometry {
 
-GeoF mulRatio(GeoF x, GeoF num, UnitF den);
+GeoF mulRatio(GeoF x, GeoF num, UnitF den, bool &overflow);
 int8_t roundGeoF(GeoF x);
 
 constexpr UnitF scaleByUint8(UnitF val, uint8_t scale) {

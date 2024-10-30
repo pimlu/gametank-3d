@@ -100,14 +100,19 @@ def build(c):
     ensure_container_running(c)
 
     triangles_o = build_dir(c, "games/triangles")
+    polyfish_o = build_dir(c, "games/polyfish")
     geometry_o = build_dir(c, "geometry")
     graphics_o = build_dir(c, "graphics")
     system_o = build_dir(c, "system")
 
-    objs = [*triangles_o, *geometry_o, *graphics_o, *system_o]
+    lib_objs = [*geometry_o, *graphics_o, *system_o]
+
+    def game_objs(game_o):
+        objs = [*game_o, *lib_objs]
+        obj_args = ' '.join(f"'{o}'" for o in objs)
+        return obj_args
 
     with c.cd(root_dir):
-        obj_args = ' '.join(f"'{o}'" for o in objs)
         ### original command used to figure out the linker command:
         # gt_run(c, f'clang --verbose -Xclang -triple=mos -T link.ld -L /usr/local/mos-platform/common/lib -o build/triangles {obj_args}')
         ### original linker command:
@@ -115,8 +120,10 @@ def build(c):
         ### modified linker command: (took out some libraries)
         # gt_run(c, f'ld.lld --sort-section=alignment {obj_args} -plugin-opt=-function-sections=1 -plugin-opt=-data-sections=1 -mllvm -force-precise-rotation-cost -mllvm -jump-inst-cost=6 -mllvm -force-loop-cold-block -mllvm -phi-node-folding-threshold=0 -mllvm -speculate-blocks=0 -mllvm -align-large-globals=false -mllvm -disable-spill-hoist -mllvm -lsr-complexity-limit=10000000 -L/usr/local/lib/clang/19/lib/mos-unknown-unknown -T link.ld -L/usr/local/mos-platform/common/lib -l:crt0.o -lcrt0  -o build/triangles')
 
-        gt_run(c, f'clang --verbose {ldd_lto_flags} -O3 -fno-stack-protector -Xclang -triple=mos -mcpu=mosw65c02 -T link.ld -L /usr/local/mos-platform/common/lib -o build/triangles {obj_args}')
+        gt_run(c, f'clang --verbose {ldd_lto_flags} -O3 -fno-stack-protector -Xclang -triple=mos -mcpu=mosw65c02 -T link.ld -L /usr/local/mos-platform/common/lib -o build/triangles {game_objs(triangles_o)}')
         gt_run(c, f'llvm-objcopy -O binary build/triangles build/triangles.gtr')
+        gt_run(c, f'clang --verbose {ldd_lto_flags} -O3 -fno-stack-protector -Xclang -triple=mos -mcpu=mosw65c02 -T link.ld -L /usr/local/mos-platform/common/lib -o build/polyfish {game_objs(polyfish_o)}')
+        gt_run(c, f'llvm-objcopy -O binary build/polyfish build/polyfish.gtr')
     
 
 @task
